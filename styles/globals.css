@@ -1,0 +1,33 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.hide-scrollbar::-webkit-scrollbar {
+	display: none;
+}
+
+::-webkit-scrollbar {
+	display: unset;
+	cursor: pointer;
+	width: 12px;
+	height: 0.25rem;
+}
+::-webkit-scrollbar-track {
+	background: transparent;
+}
+::-webkit-scrollbar-thumb {
+	border-radius: 8px;
+	border: 4px transparent solid;
+	background-clip: padding-box;
+	@apply bg-theme-primary/15;
+}
+::-webkit-scrollbar-thumb:hover {
+	@apply bg-theme-primary/20;
+}
+::-webkit-scrollbar-thumb:active {
+	@apply bg-theme-primary/30;
+}
+
+::selection {
+	@apply bg-theme-primary text-theme-secondary;
+}

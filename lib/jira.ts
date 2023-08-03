@@ -1,0 +1,293 @@
+import { Session } from 'next-auth'
+
+export namespace JiraAPI {
+	export interface Board {
+		id: number
+		self: string
+		name: string
+		type: string
+		location: {
+			userId: number
+			userAccountId: string
+			displayName: string
+			avatarURI: string
+			name: string
+		}
+	}
+	export interface Sprint {
+		id: number
+		self: string
+		state: string
+		name: string
+		startDate: string
+		endDate: string
+		completeDate: string
+		originBoardId: number
+		goal: string
+	}
+	export interface Issue {
+		expand: string
+		id: string
+		self: string
+		key: string
+		renderedFields: Issue['fields']
+		fields: {
+			statuscategorychangedate: string
+			issuetype: {
+				self: string
+				id: string
+				description: string
+				iconUrl: string
+				name: string
+				subtask: boolean
+				avatarId: number
+				hierarchyLevel: number
+			}
+			timespent: null
+			sprint: {
+				id: number
+				self: string
+				state: string
+				name: string
+				startDate: string
+				endDate: string
+				originBoardId: number
+				goal: string
+			}
+			project: {
+				self: string
+				id: string
+				key: string
+				name: string
+				projectTypeKey: string
+				simplified: boolean
+				avatarUrls: {
+					'48x48': string
+					'24x24': string
+					'16x16': string
+					'32x32': string
+				}
+				projectCategory: {
+					self: string
+					id: number
+					description: string
+					name: string
+				}
+			}
+			customfield_10032: {
+				self: string
+				value: string
+				id: string
+			}
+			fixVersions: []
+			aggregatetimespent: null
+			resolution: null
+			resolutiondate: null
+			workratio: -1
+			lastViewed: string
+			watches: {
+				self: string
+				watchCount: number
+				isWatching: boolean
+			}
+			issuerestriction: {
+				issuerestrictions: {}
+				shouldDisplay: boolean
+			}
+			created: string
+			customfield_10020: number
+			epic: null
+			priority: {
+				self: string
+				iconUrl: string
+				name: string
+				id: string
+			}
+			labels: []
+			aggregatetimeoriginalestimate: null
+			timeestimate: null
+			versions: []
+			issuelinks: []
+			assignee: null
+			updated: string
+			status: {
+				self: string
+				description: string
+				iconUrl: string
+				name: string
+				id: string
+				statusCategory: {
+					self: string
+					id: number
+					key: string
+					colorName: string
+					name: string
+				}
+			}
+			components: []
+			timeoriginalestimate: null
+			description: string
+			customfield_10057: string
+			customfield_10015: {
+				hasEpicLinkFieldDependency: boolean
+				showField: boolean
+				nonEditableReason: {
+					reason: string
+					message: string
+				}
+			}
+			timetracking: {}
+			security: null
+			aggregatetimeestimate: null
+			attachment: any[]
+			flagged: boolean
+			summary: string
+			creator: {
+				self: string
+				accountId: string
+				avatarUrls: {
+					'48x48': string
+					'24x24': string
+					'16x16': string
+					'32x32': string
+				}
+				displayName: string
+				active: boolean
+				timeZone: string
+				accountType: string
+			}
+			subtasks: []
+			reporter: {
+				self: string
+				accountId: string
+				avatarUrls: {
+					'48x48': string
+					'24x24': string
+					'16x16': string
+					'32x32': string
+				}
+				displayName: string
+				active: boolean
+				timeZone: string
+				accountType: string
+			}
+			aggregateprogress: {
+				progress: number
+				total: number
+			}
+			customfield_10000: string
+			environment: null
+			duedate: null
+			closedSprints: []
+			progress: {
+				progress: number
+				total: number
+			}
+			comment: {
+				comments: {
+					self: string
+					id: string
+					author: {
+						self: string
+						accountId: string
+						avatarUrls: {
+							'48x48': string
+							'24x24': string
+							'16x16': string
+							'32x32': string
+						}
+						displayName: string
+						active: boolean
+						timeZone: string
+						accountType: string
+					}
+					body: string
+					updateAuthor: {
+						self: string
+						accountId: string
+						avatarUrls: {
+							'48x48': string
+							'24x24': string
+							'16x16': string
+							'32x32': string
+						}
+						displayName: string
+						active: boolean
+						timeZone: string
+						accountType: string
+					}
+					created: string
+					updated: string
+					jsdPublic: boolean
+				}[]
+				self: string
+				maxResults: number
+				total: number
+				startAt: number
+			}
+			votes: {
+				self: string
+				votes: number
+				hasVoted: boolean
+			}
+			worklog: {
+				startAt: number
+				maxResults: number
+				total: number
+				worklogs: []
+			}
+		}
+	}
+}
+
+export default class Jira {
+	private _headers = new Headers()
+	private _baseUrl: string
+
+	constructor(private _session: Session) {
+		this._baseUrl = `https://api.atlassian.com/ex/jira/${this._session.cloudId}/rest`
+		this._headers.append('Authorization', `Bearer ${this._session.token}`)
+		this._headers.append('Accept', 'application/json')
+	}
+
+	private async _request(url: string, method?: string, body?: string) {
+		return fetch(this._baseUrl + url, { method, headers: this._headers, body }).then((r) => r.json())
+	}
+
+	public async getAttachment(attachment: any): Promise<string> {
+		const res = await fetch(attachment.content, { headers: this._headers })
+
+		const blob = await res.blob()
+		return URL.createObjectURL(blob)
+	}
+
+	public async getBoards(): Promise<JiraAPI.Board[]> {
+		const res = await this._request('/agile/1.0/board?type=scrum&orderBy=name')
+		return res.values
+	}
+
+	public async getSprints(boardId: number): Promise<JiraAPI.Sprint[]> {
+		const res = await this._request(`/agile/1.0/board/${boardId}/sprint?state=active,future`)
+		return res.values.sort((a, b) => a.name.localeCompare(b.name))
+	}
+
+	public async getIssues(sprintId: number): Promise<JiraAPI.Issue[]> {
+		const res = await this._request(`/agile/1.0/sprint/${sprintId}/issue`)
+		return res.issues
+	}
+
+	public async getIssue(key: string): Promise<JiraAPI.Issue> {
+		const res = await this._request(`/api/2/issue/${key}?expand=renderedFields`)
+		return res
+	}
+
+	public getIssueUrl(key: string): string {
+		return `${this._session.resourceUrl}/browse/${key}`
+	}
+
+	public async editIssueStoryPoints(issueId: string, value: number | null) {
+		// name of the story point field is customfield_10020
+		const body = { fields: { customfield_10020: value } }
+		return this._request(`${this._baseUrl}/rest/api/2/issue/${issueId}`, 'PUT', JSON.stringify(body))
+	}
+}

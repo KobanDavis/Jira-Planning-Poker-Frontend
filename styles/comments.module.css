@@ -1,0 +1,47 @@
+.issue a {
+	@apply text-theme-primary;
+	line-break: anywhere;
+}
+
+.issue p:first-child {
+	@apply mt-0;
+}
+
+.issue p {
+	@apply mt-3;
+}
+
+.issue ul,
+.issue ol {
+	list-style-position: outside;
+	@apply ml-4;
+	@apply my-1;
+}
+
+.issue ul {
+	list-style-type: disc;
+}
+
+.issue ol {
+	list-style-type: decimal;
+}
+
+.issue ol ol {
+	list-style-type: lower-alpha;
+}
+
+.issue li {
+	@apply my-1;
+}
+
+.issue a {
+	@apply text-blue-400;
+}
+
+.issue pre {
+	@apply p-2 my-1 shadow-inner bg-theme-primary/5;
+}
+
+.issue div {
+	@apply border-0 !important;
+}
