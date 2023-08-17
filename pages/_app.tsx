@@ -8,7 +8,8 @@ import { ThemeProvider } from 'providers/theme'
 import 'styles/globals.css'
 
 const App = ({ Component, pageProps: { session, ...pageProps } }: AppProps) => {
-	const theme = { primary: '#dac5a7', secondary: '#021227' } && undefined
+	const theme = { primary: '#286983', secondary: '#faf4ed' } // && undefined
+
 	return (
 		<ThemeProvider initialTheme={theme}>
 			<SessionProvider>

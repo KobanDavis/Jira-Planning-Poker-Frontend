@@ -1,0 +1,9 @@
+.stripes {
+	background-image: repeating-linear-gradient(
+		-45deg,
+		rgb(var(--theme-primary)),
+		rgb(var(--theme-primary)) 1rem,
+		rgb(var(--theme-primary) / 0.5) 1rem,
+		rgb(var(--theme-primary) / 0.5) 2rem
+	);
+}

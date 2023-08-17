@@ -4,7 +4,6 @@ import { JiraAPI } from 'lib/jira'
 import { useJira } from 'providers/jira'
 import { useQS } from 'hooks'
 import { useGame } from 'providers/game'
-import { Events } from 'backend/types'
 import { useRouter } from 'next/router'
 
 type Keys = 'board' | 'sprint'
@@ -24,9 +23,7 @@ const App: FC = () => {
 	const [issues, setIssues] = useState<JiraAPI.Issue[]>([])
 	const [selectedIssueId, setSelectedIssueId] = useState<string>(null)
 
-	const [creationState, setCreationState] = useState<string>(null)
-
-	const selectedSprint = useMemo(() => sprints?.find((sprint) => sprint.id === selectedSprintId), [sprints])
+	const selectedSprint = sprints?.find((sprint) => sprint.id === selectedSprintId)
 
 	useEffect(() => {
 		const init = async () => {
@@ -68,7 +65,7 @@ const App: FC = () => {
 	}
 
 	const createGame = () => {
-		socket.emit('room/create', self.id, (roomId) => {
+		socket.emit('room/create', { roomName: selectedSprint.name, playerId: self.id, sprintId: selectedSprintId }, (roomId) => {
 			router.push(`/game/${roomId}`)
 		})
 	}
@@ -109,7 +106,7 @@ const App: FC = () => {
 							<div>
 								{selectedSprint ? (
 									<>
-										<span className='mr-1 text-gray-300'>State:</span>
+										<span className='mr-1 text-theme-primary'>State:</span>
 										{selectedSprint.state === 'active' ? (
 											<span className='text-green-400'>Active</span>
 										) : (
@@ -138,7 +135,7 @@ const App: FC = () => {
 				</Card>
 				{issues?.length ? (
 					<Button onClick={createGame} type='primary' className='w-max mt-2'>
-						{creationState ?? `Estimate ${issues.length} Issues`}
+						Estimate {issues.length} Issues
 					</Button>
 				) : null}
 			</div>

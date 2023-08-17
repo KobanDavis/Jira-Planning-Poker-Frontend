@@ -77,9 +77,9 @@ const Issue: FC<IssueProps> = ({ issueId, close }) => {
 				}
 			>
 				{issue.fields.description || issue.fields.customfield_10057 ? (
-					<div className='flex space-x-2'>
+					<div className='flex w-full space-x-2'>
 						{issue.fields.description ? (
-							<div className='flex flex-col my-2'>
+							<div className='flex flex-col my-2 flex-1'>
 								<span className='font-bold mb-1'>Description</span>
 								<div
 									className='resize text-sm bg-theme-secondary rounded p-2 min-h-[15rem]'
@@ -88,7 +88,7 @@ const Issue: FC<IssueProps> = ({ issueId, close }) => {
 							</div>
 						) : null}
 						{issue.fields.customfield_10057 !== null ? (
-							<div className='flex flex-col my-2'>
+							<div className='flex flex-col my-2 flex-1'>
 								<span className='font-bold mb-1'>Acceptance Criteria</span>
 								<div
 									className='text-sm bg-theme-secondary rounded p-2 min-h-[15rem]'

@@ -45,7 +45,7 @@ const Dropdown: FC<DropdownProps> = ({ disabled, className, type, items, placeho
 				className={clsx(
 					className,
 					buttonStyles[type ?? 'DEFAULT'],
-					'flex px-4 py-1.5 rounded-sm font-semibold text-xs backdrop-blur-lg transition-colors h-min'
+					'flex px-4 py-1.5 rounded-sm font-semibold text-xs backdrop-blur-lg transition-colors h-min relative'
 				)}
 				{...props}
 			>

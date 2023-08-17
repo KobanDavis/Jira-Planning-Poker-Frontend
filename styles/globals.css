@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+body {
+	@apply bg-theme-secondary text-theme-primary;
+}
+
 .hide-scrollbar::-webkit-scrollbar {
 	display: none;
 }
