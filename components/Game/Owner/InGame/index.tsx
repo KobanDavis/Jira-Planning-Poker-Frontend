@@ -40,7 +40,7 @@ const InGame: FC<InGameProps> = ({}) => {
 
 	const cancelVote = () => {
 		socket.emit('ingame/state', Game.State.PREGAME)
-		socket.emit('ingame/currentRound', null)
+		socket.emit('ingame/cards', [])
 	}
 
 	const finishVote = () => {
