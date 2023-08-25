@@ -1,7 +1,6 @@
 import { Game } from 'backend/types'
 import { LoadingScreen } from 'components'
-import { Owner, NotJoined } from 'components/Game'
-import { JiraAPI } from 'lib/jira'
+import { NotJoined, Lobby, PreGame, PostGame, InGame } from 'components/Game'
 import { useRouter } from 'next/router'
 import { useGame } from 'providers/game'
 import { useJira } from 'providers/jira'
@@ -12,7 +11,6 @@ const Room: FC = () => {
 	const roomId = router.query.roomId as string
 	const { self, data, socket, updateData } = useGame()
 	const jira = useJira()
-	const [issues, setIssues] = useState<JiraAPI.Issue[]>(null)
 	const [roomExists, setRoomExists] = useState<boolean>(null)
 
 	useEffect(() => {
@@ -53,19 +51,24 @@ const Room: FC = () => {
 
 	switch (data.state) {
 		case Game.State.NOT_JOINED: {
+			const name = window.localStorage.getItem('name')
+			if (name) {
+				join(name)
+				return <LoadingScreen message='Joining game' />
+			}
 			return <NotJoined join={join} />
 		}
 		case Game.State.LOBBY: {
-			return self.role === 'player' ? <div>LOBBY</div> : <Owner.Lobby />
+			return <Lobby />
 		}
 		case Game.State.PREGAME: {
-			return self.role === 'player' ? <div>PREGAME</div> : <Owner.PreGame />
+			return <PreGame />
 		}
 		case Game.State.INGAME: {
-			return self.role === 'player' ? <div>INGAME</div> : <Owner.InGame />
+			return self.role === 'owner' ? <InGame.Owner /> : <InGame.Player />
 		}
 		case Game.State.POSTGAME: {
-			return self.role === 'player' ? <div>POSTGAME</div> : <Owner.PostGame />
+			return <PostGame />
 		}
 		default:
 			return <div>Game machine broke :(</div>

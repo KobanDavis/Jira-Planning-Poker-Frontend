@@ -1,17 +1,19 @@
 import { useGame } from 'providers/game'
-import { FC, ReactNode, useEffect, useState } from 'react'
+import { FC, useEffect, useState } from 'react'
 import { Button, IssueModal, Label, PokerCard } from 'components'
 import clsx from 'clsx'
 import { Game } from 'backend/types'
 
 interface InGameProps {}
-
 const FlyInCard: FC<{ isStraight: boolean }> = ({ isStraight }) => {
-	const [deg, setDeg] = useState(Math.floor(Math.random() * 20) - 10)
-	const [x, setX] = useState(window.innerWidth / 2 + 300)
+	const initX = window.innerWidth / 2 + 300
+	const initDeg = Math.floor(Math.random() * 20) - 10
+	const { data } = useGame()
+	const [deg, setDeg] = useState(initDeg)
+	const [x, setX] = useState(initX)
 
 	useEffect(() => {
-		setTimeout(() => setX(0), 0)
+		setTimeout(() => setX(0), 100)
 	}, [])
 
 	useEffect(() => {
@@ -32,7 +34,7 @@ const FlyInCard: FC<{ isStraight: boolean }> = ({ isStraight }) => {
 	)
 }
 
-const InGame: FC<InGameProps> = ({}) => {
+const Owner: FC<InGameProps> = ({}) => {
 	const { data, socket } = useGame()
 	const [isReady, setIsReady] = useState<boolean>(false)
 	const [flyout, setFlyout] = useState<boolean>(false)
@@ -66,7 +68,7 @@ const InGame: FC<InGameProps> = ({}) => {
 			</Label>
 			<div
 				className={clsx(
-					'flex items-center justify-center transition-all duration-500 relative rounded h-[21rem] w-[15rem] border-4',
+					'flex items-center justify-center transition-all duration-500 relative rounded shrink-0 h-[21rem] w-[15rem] border-4',
 					data.cards.length === data.players.length ? 'border-solid border-theme-primary' : 'border-dashed border-theme-primary/15',
 					flyout ? 'opacity-0' : 'delay-500 opacity-100'
 				)}
@@ -100,4 +102,4 @@ const InGame: FC<InGameProps> = ({}) => {
 	)
 }
 
-export default InGame
+export default Owner

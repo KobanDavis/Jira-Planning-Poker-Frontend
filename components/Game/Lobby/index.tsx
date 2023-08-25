@@ -1,15 +1,13 @@
 import { StarIcon, UserIcon } from '@heroicons/react/24/solid'
 import { Game } from 'backend/types'
-import clsx from 'clsx'
-import { Button, Card, Issue, Label, Loading } from 'components'
-import { borderBase } from 'lib/styles'
+import { Button, Card, Label } from 'components'
 import { useGame } from 'providers/game'
 import { FC } from 'react'
 
 interface LobbyProps {}
 
 const Lobby: FC<LobbyProps> = ({}) => {
-	const { data, socket } = useGame()
+	const { data, socket, self } = useGame()
 
 	const startPlanning = () => {
 		socket.emit('ingame/state', Game.State.PREGAME)
@@ -30,9 +28,11 @@ const Lobby: FC<LobbyProps> = ({}) => {
 					))}
 				</div>
 			</Card>
-			<Button onClick={startPlanning} type='primary'>
-				Start Planning
-			</Button>
+			{self.role === 'owner' ? (
+				<Button onClick={startPlanning} type='primary'>
+					Start Planning
+				</Button>
+			) : null}
 		</div>
 	)
 }

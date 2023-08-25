@@ -40,7 +40,7 @@ const Section: FC<SectionProps> = ({ rounds, title, selectedRoundId, setSelected
 }
 
 const PreGame: FC = () => {
-	const { data, socket } = useGame()
+	const { data, socket, self } = useGame()
 	const [modalVisibility, setModalVisibility] = useState<boolean>(false)
 	const [selectedRoundId, setSelectedRoundId] = useState<string>(null)
 
@@ -83,27 +83,30 @@ const PreGame: FC = () => {
 				<Button disabled={selectedRoundId === null} onClick={() => setModalVisibility(true)}>
 					Preview
 				</Button>
-
-				<Button
-					className='text-red-600'
-					disabled={selectedRoundId === null || selectedRound.resolution === Game.Resolution.REJECTED}
-					onClick={() => updateResolution(selectedRound, Game.Resolution.REJECTED)}
-				>
-					Reject
-				</Button>
-				<Button
-					disabled={selectedRoundId === null || selectedRound.resolution === Game.Resolution.ACCEPTED}
-					onClick={() => updateResolution(selectedRound, Game.Resolution.ACCEPTED)}
-				>
-					Accept
-				</Button>
-				<Button
-					type='primary'
-					disabled={selectedRoundId === null || selectedRound.resolution !== Game.Resolution.ACCEPTED}
-					onClick={() => vote(selectedRoundId)}
-				>
-					Vote
-				</Button>
+				{self.role === 'owner' ? (
+					<>
+						<Button
+							className='text-red-600'
+							disabled={selectedRoundId === null || selectedRound.resolution === Game.Resolution.REJECTED}
+							onClick={() => updateResolution(selectedRound, Game.Resolution.REJECTED)}
+						>
+							Reject
+						</Button>
+						<Button
+							disabled={selectedRoundId === null || selectedRound.resolution === Game.Resolution.ACCEPTED}
+							onClick={() => updateResolution(selectedRound, Game.Resolution.ACCEPTED)}
+						>
+							Accept
+						</Button>
+						<Button
+							type='primary'
+							disabled={selectedRoundId === null || selectedRound.resolution !== Game.Resolution.ACCEPTED}
+							onClick={() => vote(selectedRoundId)}
+						>
+							Vote
+						</Button>
+					</>
+				) : null}
 			</div>
 			{modalVisibility ? <IssueModal close={() => setModalVisibility(false)} issueId={selectedRoundId} /> : null}
 		</div>

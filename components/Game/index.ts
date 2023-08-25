@@ -1,3 +1,5 @@
-export { default as Owner } from './Owner'
-export { default as Player } from './Owner'
+export { default as InGame } from './InGame'
+export { default as Lobby } from './Lobby'
 export { default as NotJoined } from './NotJoined'
+export { default as PostGame } from './PostGame'
+export { default as PreGame } from './PreGame'

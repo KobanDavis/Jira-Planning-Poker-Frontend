@@ -18,7 +18,12 @@ const Input: FC<InputProps> = ({ className, type, htmlType, ...props }) => {
 	return (
 		<input
 			type={htmlType}
-			className={clsx('px-2 py-1.5 rounded-sm', 'font-semibold text-xs transition-colors', inputStyles[type ?? 'DEFAULT'], className)}
+			className={clsx(
+				'px-2 py-1.5 rounded-sm outline-none placeholder-theme-primary/50',
+				'font-semibold text-xs transition-colors',
+				inputStyles[type ?? 'DEFAULT'],
+				className
+			)}
 			{...props}
 		/>
 	)

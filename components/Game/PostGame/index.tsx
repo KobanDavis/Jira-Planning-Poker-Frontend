@@ -25,7 +25,7 @@ const Animation: FC<{ delay: number; children: ReactNode }> = ({ delay, children
 }
 
 const PostGame: FC = ({}) => {
-	const { data, socket } = useGame()
+	const { data, socket, self } = useGame()
 	const [estimate, setEstimate] = useState(null)
 
 	const saveEstimate = () => {
@@ -112,15 +112,17 @@ const PostGame: FC = ({}) => {
 						Average estimate: {mean}
 					</Label>
 				</div>
-				<div className='flex flex-col space-y-2 items-start'>
-					<Input onChange={(e) => setEstimate(e.target.value)} value={estimate} placeholder='Estimate' className='w-full' htmlType='number' />
-					<div className='flex space-x-2 items-center'>
-						<Button type='primary' disabled={!estimate} onClick={saveEstimate}>
-							Save Estimate
-						</Button>
-						<Button onClick={revote}>Re-vote</Button>
+				{self.role === 'owner' ? (
+					<div className='flex flex-col space-y-2 items-start'>
+						<Input onChange={(e) => setEstimate(e.target.value)} value={estimate} placeholder='Estimate' className='w-full' htmlType='number' />
+						<div className='flex space-x-2 items-center'>
+							<Button type='primary' disabled={!estimate} onClick={saveEstimate}>
+								Save Estimate
+							</Button>
+							<Button onClick={revote}>Re-vote</Button>
+						</div>
 					</div>
-				</div>
+				) : null}
 			</div>
 		</div>
 	)
