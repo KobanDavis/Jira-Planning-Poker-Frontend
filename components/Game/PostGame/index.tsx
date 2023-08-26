@@ -1,4 +1,5 @@
-import { Game } from 'backend/types'
+import { Game } from 'types/backend'
+import clsx from 'clsx'
 import { Card, Button, PokerCard, Label } from 'components'
 import Input from 'components/Input'
 import { useGame } from 'providers/game'
@@ -8,7 +9,7 @@ const Animation: FC<{ delay: number; children: ReactNode }> = ({ delay, children
 	const [y, setY] = useState(200)
 
 	useEffect(() => {
-		setTimeout(() => setY(0), delay)
+		setTimeout(() => setY(0), delay + 100)
 	}, [delay])
 
 	return (
@@ -101,7 +102,7 @@ const PostGame: FC = ({}) => {
 				))}
 			</div>
 			<div className='flex items-center mt-6 space-x-2'>
-				<div className='flex flex-col items-end space-y-2'>
+				<div className={clsx('flex flex-col space-y-2', self.role === 'owner' ? 'items-end' : 'items-center')}>
 					<Label type={estimate === mode ? 'primary' : undefined} onClick={() => setEstimate(mode)} className='cursor-pointer select-none'>
 						Common estimate: {mode}
 					</Label>

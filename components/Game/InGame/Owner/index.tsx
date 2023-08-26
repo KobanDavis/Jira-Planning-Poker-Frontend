@@ -2,7 +2,7 @@ import { useGame } from 'providers/game'
 import { FC, useEffect, useState } from 'react'
 import { Button, IssueModal, Label, PokerCard } from 'components'
 import clsx from 'clsx'
-import { Game } from 'backend/types'
+import { Game } from 'types/backend'
 
 interface InGameProps {}
 const FlyInCard: FC<{ isStraight: boolean }> = ({ isStraight }) => {

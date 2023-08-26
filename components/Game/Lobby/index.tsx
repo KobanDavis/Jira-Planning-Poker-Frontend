@@ -1,5 +1,5 @@
 import { StarIcon, UserIcon } from '@heroicons/react/24/solid'
-import { Game } from 'backend/types'
+import { Game } from 'types/backend'
 import { Button, Card, Label } from 'components'
 import { useGame } from 'providers/game'
 import { FC } from 'react'

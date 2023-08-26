@@ -1,4 +1,4 @@
-import { Game } from 'backend/types'
+import { Game } from 'types/backend'
 import clsx from 'clsx'
 import { Button, Card, IssueModal, Label } from 'components'
 import { useGame } from 'providers/game'

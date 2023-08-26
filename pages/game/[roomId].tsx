@@ -1,4 +1,4 @@
-import { Game } from 'backend/types'
+import { Game } from 'types/backend'
 import { LoadingScreen } from 'components'
 import { NotJoined, Lobby, PreGame, PostGame, InGame } from 'components/Game'
 import { useRouter } from 'next/router'

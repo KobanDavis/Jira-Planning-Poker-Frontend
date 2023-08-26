@@ -1,5 +1,5 @@
 import React, { useContext, createContext, FC, useState, useEffect, useRef, useMemo } from 'react'
-import { Events, Game } from 'backend/types'
+import { Events, Game } from 'types/backend'
 import io, { Socket } from 'socket.io-client'
 
 interface Data {

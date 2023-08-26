@@ -1,7 +1,7 @@
 import { PokerCard, Button, Input, Label } from 'components'
 import { FC, useState } from 'react'
 import clsx from 'clsx'
-import { Game } from 'backend/types'
+import { Game } from 'types/backend'
 import { useGame } from 'providers/game'
 
 const Player: FC = () => {
