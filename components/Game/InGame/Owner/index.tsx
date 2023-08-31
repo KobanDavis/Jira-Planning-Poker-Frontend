@@ -1,14 +1,14 @@
 import { useGame } from 'providers/game'
 import { FC, useEffect, useState } from 'react'
-import { Button, IssueModal, Label, PokerCard } from 'components'
+import { Button, Input, IssueModal, Label, PokerCard } from 'components'
 import clsx from 'clsx'
 import { Game } from 'types/backend'
+import { EyeIcon, EyeSlashIcon, PaperAirplaneIcon } from '@heroicons/react/24/solid'
 
 interface InGameProps {}
 const FlyInCard: FC<{ isStraight: boolean }> = ({ isStraight }) => {
 	const initX = window.innerWidth / 2 + 300
 	const initDeg = Math.floor(Math.random() * 20) - 10
-	const { data } = useGame()
 	const [deg, setDeg] = useState(initDeg)
 	const [x, setX] = useState(initX)
 
@@ -35,10 +35,12 @@ const FlyInCard: FC<{ isStraight: boolean }> = ({ isStraight }) => {
 }
 
 const Owner: FC<InGameProps> = ({}) => {
-	const { data, socket } = useGame()
+	const { data, socket, self } = useGame()
 	const [isReady, setIsReady] = useState<boolean>(false)
 	const [flyout, setFlyout] = useState<boolean>(false)
 	const [modalVisibility, setModalVisibility] = useState<boolean>(false)
+	const [value, setValue] = useState<string>('')
+	const [voteIsVisible, setVoteIsVisible] = useState<boolean>(false)
 
 	const cancelVote = () => {
 		socket.emit('ingame/state', Game.State.PREGAME)
@@ -55,7 +57,17 @@ const Owner: FC<InGameProps> = ({}) => {
 		}, 500)
 	}
 
+	const submit = () => {
+		const card: Game.Card = {
+			id: self.id,
+			name: self.name,
+			value,
+		}
+		socket.emit('ingame/card', card)
+	}
+
 	const round = data.rounds.find((round) => round.id === data.currentRound)
+	const hasSubmittedCard = data.cards.some((card) => card.id === self.id)
 	return (
 		<div className='select-none overflow-hidden w-full h-screen flex flex-col items-center justify-center'>
 			<Label
@@ -89,13 +101,41 @@ const Owner: FC<InGameProps> = ({}) => {
 					{data.cards.length} / {data.players.length} cards
 				</span>
 			</span>
-			<div className={clsx('transition-opacity space-x-2', flyout ? 'opacity-0' : 'opacity-100')}>
-				<Button disabled={isReady} onClick={cancelVote}>
-					Cancel
-				</Button>
-				<Button type={data.cards.length === data.players.length ? 'primary' : undefined} onClick={finishVote} disabled={data.cards.length === 0}>
-					Flip
-				</Button>
+			<div className={clsx('flex flex-col items-center transition-opacity space-y-2', flyout ? 'opacity-0' : 'opacity-100')}>
+				<div className='flex flex-col transition-opacity mt-2'>
+					{hasSubmittedCard === false ? (
+						<>
+							<div className='flex items-center space-x-2 cursor-pointer' onClick={() => setVoteIsVisible(!voteIsVisible)}>
+								<Label>Estimate</Label>
+								{voteIsVisible ? <EyeIcon className='h-4 w-4' /> : <EyeSlashIcon className='h-4 w-4' />}
+							</div>
+							<div className='flex mt-2'>
+								<Input
+									className='rounded-r-none'
+									htmlType={voteIsVisible ? 'text' : 'password'}
+									onChange={(e) => setValue((e.target as any).value)}
+								/>
+								<Button
+									type='primary'
+									disabled={Number(value) < 0 || value.length === 0}
+									className=' rounded-l-none border-l-0'
+									onClick={submit}
+								>
+									<PaperAirplaneIcon className='w-4 h-4' />
+								</Button>
+							</div>
+						</>
+					) : null}
+				</div>
+
+				<div className='flex space-x-2'>
+					<Button disabled={isReady} onClick={cancelVote}>
+						Cancel
+					</Button>
+					<Button type={data.cards.length === data.players.length ? 'primary' : undefined} onClick={finishVote} disabled={data.cards.length === 0}>
+						Flip
+					</Button>
+				</div>
 			</div>
 			{modalVisibility ? <IssueModal close={() => setModalVisibility(false)} issueId={data.currentRound} /> : null}
 		</div>
