@@ -13,6 +13,10 @@ const Lobby: FC<LobbyProps> = ({}) => {
 		socket.emit('ingame/state', Game.State.PREGAME)
 	}
 
+	const copyLink = () => {
+		navigator.clipboard.writeText(window.location.href)
+	}
+
 	return (
 		<div className='flex flex-col space-y-2 items-center justify-center h-screen'>
 			<Card title={data.name} className='w-[30rem]'>
@@ -28,11 +32,14 @@ const Lobby: FC<LobbyProps> = ({}) => {
 					))}
 				</div>
 			</Card>
-			{self.role === 'owner' ? (
-				<Button onClick={startPlanning} type='primary'>
-					Start Planning
-				</Button>
-			) : null}
+			<div className='flex space-x-2'>
+				<Button onClick={copyLink}>Copy room link</Button>
+				{self.role === 'owner' ? (
+					<Button onClick={startPlanning} type='primary'>
+						Start Planning
+					</Button>
+				) : null}
+			</div>
 		</div>
 	)
 }
