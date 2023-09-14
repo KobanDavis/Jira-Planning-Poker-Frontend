@@ -35,11 +35,13 @@ const Section: FC<SectionProps> = ({ rounds, title, selectedRoundId, setSelected
 					>
 						<div className='flex items-center truncate'>
 							<Label
-								type='primary'
-								className='mr-1.5 cursor-pointer'
+								type={!round.id.endsWith('???') ? 'primary' : 'secondary'}
+								className={clsx('mr-1.5', !round.id.endsWith('???') && 'cursor-pointer')}
 								onClick={(e) => {
 									e.stopPropagation()
-									handlePreview(round.id)
+									if (!round.id.endsWith('???')) {
+										handlePreview(round.id)
+									}
 								}}
 							>
 								{round.id}
@@ -85,7 +87,7 @@ const PreGame: FC = () => {
 	}
 
 	const openPreview = () => setIssueModalVisibility(true)
-
+	const isNewIssue = selectedRoundId?.endsWith('???')
 	return (
 		<div className='flex flex-col space-y-2 items-center justify-center h-screen'>
 			<Card
@@ -110,7 +112,7 @@ const PreGame: FC = () => {
 				</div>
 			</Card>
 			<div className='space-x-2'>
-				<Button disabled={selectedRoundId === null} onClick={openPreview}>
+				<Button disabled={selectedRoundId === null || isNewIssue} onClick={openPreview}>
 					Preview
 				</Button>
 				{self.role === 'owner' ? (

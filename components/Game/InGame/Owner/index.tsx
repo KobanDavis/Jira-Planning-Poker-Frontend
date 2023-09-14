@@ -70,14 +70,20 @@ const Owner: FC<InGameProps> = ({}) => {
 	const hasSubmittedCard = data.cards.some((card) => card.id === self.id)
 	return (
 		<div className='select-none overflow-hidden w-full h-screen flex flex-col items-center justify-center'>
-			<Label
-				type='primary'
-				onClick={() => setModalVisibility(true)}
-				className={clsx('mb-8 cursor-pointer transition-opacity normal-case', isReady ? 'opacity-0' : 'opacity-100')}
-			>
-				<span className='mr-1'>[{round?.id}]</span>
-				<span className='transition-colors'>{round?.title}</span>
-			</Label>
+			<div className='flex items-center mb-8 space-x-2'>
+				<Label
+					type={!round.id.endsWith('???') ? 'primary' : 'secondary'}
+					onClick={() => {
+						if (!round.id.endsWith('???')) {
+							setModalVisibility(true)
+						}
+					}}
+					className={clsx('transition-opacity normal-case', !round.id.endsWith('???') && 'cursor-pointer', isReady ? 'opacity-0' : 'opacity-100')}
+				>
+					[{round?.id}]
+				</Label>
+				<span className='transition-colors font-semibold'>{round?.title}</span>
+			</div>
 			<div
 				className={clsx(
 					'flex items-center justify-center transition-all duration-500 relative rounded shrink-0 h-[21rem] w-[15rem] border-4',
