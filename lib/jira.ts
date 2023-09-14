@@ -291,12 +291,12 @@ export default class Jira {
 		return res.values
 	}
 
-	public async getSprints(boardId: number): Promise<JiraAPI.Sprint[]> {
+	public async getSprints(boardId: string): Promise<JiraAPI.Sprint[]> {
 		const res = await this._request(`/agile/1.0/board/${boardId}/sprint?state=active,future`)
 		return res.values.sort((a, b) => a.name.localeCompare(b.name))
 	}
 
-	public async getIssues(sprintId: number): Promise<JiraAPI.Issue[]> {
+	public async getIssues(sprintId: string): Promise<JiraAPI.Issue[]> {
 		const res = await this._request(`/agile/1.0/sprint/${sprintId}/issue`)
 		return res.issues
 	}

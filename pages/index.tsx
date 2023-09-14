@@ -15,15 +15,15 @@ const App: FC = () => {
 
 	const { board, sprint, setQS } = useQS<Keys>()
 	const [boards, setBoards] = useState<JiraAPI.Board[]>(null)
-	const [selectedBoardId, setSelectedBoardId] = useState<number>(board && Number(board))
+	const [selectedBoardId, setSelectedBoardId] = useState<string>(board)
 
 	const [sprints, setSprints] = useState<JiraAPI.Sprint[]>([])
-	const [selectedSprintId, setSelectedSprintId] = useState<number>(sprint && Number(sprint))
+	const [selectedSprintId, setSelectedSprintId] = useState<string>(sprint)
 
 	const [issues, setIssues] = useState<JiraAPI.Issue[]>([])
 	const [selectedIssueId, setSelectedIssueId] = useState<string>(null)
 
-	const selectedSprint = sprints?.find((sprint) => sprint.id === selectedSprintId)
+	const selectedSprint = sprints?.find((sprint) => sprint.id.toString() === selectedSprintId)
 
 	useEffect(() => {
 		const init = async () => {
@@ -46,7 +46,7 @@ const App: FC = () => {
 		})
 	}, [selectedBoardId, selectedSprintId])
 
-	const onBoardChange = async (id: number) => {
+	const onBoardChange = async (id: string) => {
 		setSprints(null)
 		setSelectedSprintId(null)
 		setIssues(null)
@@ -56,7 +56,7 @@ const App: FC = () => {
 		jira.getSprints(id).then(setSprints)
 	}
 
-	const onSprintChange = async (id: number) => {
+	const onSprintChange = async (id: string) => {
 		setIssues(null)
 		setSelectedIssueId(null)
 		setSelectedSprintId(id)
@@ -65,7 +65,7 @@ const App: FC = () => {
 	}
 
 	const createGame = () => {
-		socket.emit('room/create', { roomName: selectedSprint.name, playerId: self.id, sprintId: selectedSprintId }, (roomId) => {
+		socket.emit('room/create', { roomName: selectedSprint.name, playerId: self.id, sprintId: Number(selectedSprintId) }, (roomId) => {
 			router.push(`/game/${roomId}`)
 		})
 	}
@@ -87,7 +87,7 @@ const App: FC = () => {
 								placeholder='Select Board'
 								onChange={onBoardChange}
 								selectedItemId={selectedBoardId}
-								items={boards?.map((board) => ({ label: board.name, ...board }))}
+								items={boards?.map((board) => ({ label: board.name, id: board.id.toString(), icon: board.location.avatarURI }))}
 							/>
 							<Dropdown
 								disabled={selectedBoardId === null}
@@ -95,7 +95,7 @@ const App: FC = () => {
 								placeholder='Select Sprint'
 								onChange={onSprintChange}
 								selectedItemId={selectedSprintId}
-								items={sprints?.map((sprint) => ({ label: sprint.name, ...sprint }))}
+								items={sprints?.map((sprint) => ({ label: sprint.name, id: sprint.id.toString() }))}
 							/>
 						</div>
 						<div className='flex items-center justify-between'>
