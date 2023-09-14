@@ -23,7 +23,7 @@ const Room: FC = () => {
 	const join = (name: string) => {
 		socket.emit('room/join', { roomId: roomId.toString(), id: self.id, name }, async (sprintId) => {
 			if (!sprintId) return
-			const issues = await jira.getIssues(sprintId)
+			const issues = await jira.getIssues(sprintId.toString())
 			const rounds = issues.map<Game.Round>((issue) => ({
 				id: issue.key,
 				title: issue.fields.summary,
