@@ -1,17 +1,25 @@
 import { Game } from 'types/backend'
 import clsx from 'clsx'
-import { Button, Card, IssueModal, Label } from 'components'
+import { Button, Card, Dropdown, Input, IssueModal, NewIssueModal, Label, Modal } from 'components'
 import { useGame } from 'providers/game'
 import { FC, useState } from 'react'
+import { borderBase } from 'lib/styles'
+import { PlusIcon } from '@heroicons/react/24/solid'
 
 interface SectionProps {
 	title: string
 	rounds: Game.Round[]
 	selectedRoundId: string
-	setSelectedRoundId: (id: string) => void
+	setSelectedRoundId(id: string): void
+	openPreview(): void
 }
 
-const Section: FC<SectionProps> = ({ rounds, title, selectedRoundId, setSelectedRoundId }) => {
+const Section: FC<SectionProps> = ({ rounds, title, selectedRoundId, setSelectedRoundId, openPreview }) => {
+	const handlePreview = (id: string) => {
+		setSelectedRoundId(id)
+		openPreview()
+	}
+
 	return rounds.length ? (
 		<>
 			<Label type='secondary'>{title}</Label>
@@ -20,13 +28,22 @@ const Section: FC<SectionProps> = ({ rounds, title, selectedRoundId, setSelected
 					<div
 						onClick={() => setSelectedRoundId(round.id === selectedRoundId ? null : round.id)}
 						className={clsx(
-							'select-none justify-between flex items-center text-xs py-0.5 px-1 mb-1 cursor-pointer rounded-sm',
+							'select-none justify-between flex items-center text-xs py-px px-1 mb-1 rounded-sm',
 							round.id === selectedRoundId ? 'bg-theme-primary/15' : 'bg-theme-primary/5 hover:bg-theme-primary/10'
 						)}
 						key={round.id}
 					>
 						<div className='flex items-center truncate'>
-							<span className='mr-1'>[{round.id}]</span>
+							<Label
+								type='primary'
+								className='mr-1.5 cursor-pointer'
+								onClick={(e) => {
+									e.stopPropagation()
+									handlePreview(round.id)
+								}}
+							>
+								{round.id}
+							</Label>
 							<span className='truncate'>{round.title}</span>
 						</div>
 						<div className='flex items-center justify-center text-xs self-baseline px-[5px] h-4 m-1 ml-2 rounded bg-theme-primary text-theme-secondary shrink-0'>
@@ -41,7 +58,8 @@ const Section: FC<SectionProps> = ({ rounds, title, selectedRoundId, setSelected
 
 const PreGame: FC = () => {
 	const { data, socket, self } = useGame()
-	const [modalVisibility, setModalVisibility] = useState<boolean>(false)
+	const [issueModalVisibility, setIssueModalVisibility] = useState<boolean>(false)
+	const [roundModalVisibility, setRoundModalVisibility] = useState<boolean>(false)
 	const [selectedRoundId, setSelectedRoundId] = useState<string>(null)
 
 	const sections = data.rounds.reduce<Partial<Record<Game.Resolution, Game.Round[]>>>((sections, round) => {
@@ -59,17 +77,29 @@ const PreGame: FC = () => {
 		socket.emit('ingame/round', round)
 	}
 
+	const handleNewIssue = ({}) => {}
+
 	const vote = (roundId: string) => {
 		socket.emit('ingame/currentRound', roundId)
 		socket.emit('ingame/state', Game.State.INGAME)
 	}
 
+	const openPreview = () => setIssueModalVisibility(true)
+
 	return (
 		<div className='flex flex-col space-y-2 items-center justify-center h-screen'>
-			<Card title={data.name}>
+			<Card
+				title={
+					<div className={clsx(borderBase, 'border-0 border-b', 'flex justify-between items-center py-2 px-4 font-semibold text-lg')}>
+						<span>{data.name}</span>
+						<PlusIcon onClick={() => setRoundModalVisibility(true)} className='h-6 w-6 cursor-pointer' />
+					</div>
+				}
+			>
 				<div className='space-y-2'>
 					{Object.entries(sections).map(([resolution, rounds]) => (
 						<Section
+							openPreview={openPreview}
 							setSelectedRoundId={setSelectedRoundId}
 							selectedRoundId={selectedRoundId}
 							rounds={rounds}
@@ -80,7 +110,7 @@ const PreGame: FC = () => {
 				</div>
 			</Card>
 			<div className='space-x-2'>
-				<Button disabled={selectedRoundId === null} onClick={() => setModalVisibility(true)}>
+				<Button disabled={selectedRoundId === null} onClick={openPreview}>
 					Preview
 				</Button>
 				{self.role === 'owner' ? (
@@ -108,7 +138,8 @@ const PreGame: FC = () => {
 					</>
 				) : null}
 			</div>
-			{modalVisibility ? <IssueModal close={() => setModalVisibility(false)} issueId={selectedRoundId} /> : null}
+			{issueModalVisibility ? <IssueModal close={() => setIssueModalVisibility(false)} issueId={selectedRoundId} /> : null}
+			{roundModalVisibility ? <NewIssueModal close={() => setRoundModalVisibility(false)} /> : null}
 		</div>
 	)
 }

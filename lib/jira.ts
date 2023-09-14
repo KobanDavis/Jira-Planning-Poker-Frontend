@@ -1,6 +1,52 @@
 import { Session } from 'next-auth'
 
 export namespace JiraAPI {
+	export interface AvatarURLs {
+		'48x48': string
+		'24x24': string
+		'16x16': string
+		'32x32': string
+	}
+
+	export interface CreateMeta {
+		self: string
+		id: string
+		key: string
+		name: string
+		avatarUrls: AvatarURLs
+		issuetypes: IssueType[]
+	}
+
+	export interface Project {
+		expand: string
+		self: string
+		id: string
+		key: string
+		name: string
+		avatarUrls: AvatarURLs
+		projectCategory: {
+			self: string
+			id: string
+			name: string
+			description: string
+		}
+		projectTypeKey: string
+		simplified: boolean
+		style: string
+		isPrivate: boolean
+		properties: object
+	}
+
+	export interface IssueType {
+		self: string
+		id: string
+		description: string
+		iconUrl: string
+		name: string
+		untranslatedName: string
+		subtask: boolean
+	}
+
 	export interface Board {
 		id: number
 		self: string
@@ -61,12 +107,7 @@ export namespace JiraAPI {
 				name: string
 				projectTypeKey: string
 				simplified: boolean
-				avatarUrls: {
-					'48x48': string
-					'24x24': string
-					'16x16': string
-					'32x32': string
-				}
+				avatarUrls: AvatarURLs
 				projectCategory: {
 					self: string
 					id: number
@@ -145,12 +186,7 @@ export namespace JiraAPI {
 			creator: {
 				self: string
 				accountId: string
-				avatarUrls: {
-					'48x48': string
-					'24x24': string
-					'16x16': string
-					'32x32': string
-				}
+				avatarUrls: AvatarURLs
 				displayName: string
 				active: boolean
 				timeZone: string
@@ -160,12 +196,7 @@ export namespace JiraAPI {
 			reporter: {
 				self: string
 				accountId: string
-				avatarUrls: {
-					'48x48': string
-					'24x24': string
-					'16x16': string
-					'32x32': string
-				}
+				avatarUrls: AvatarURLs
 				displayName: string
 				active: boolean
 				timeZone: string
@@ -190,12 +221,7 @@ export namespace JiraAPI {
 					author: {
 						self: string
 						accountId: string
-						avatarUrls: {
-							'48x48': string
-							'24x24': string
-							'16x16': string
-							'32x32': string
-						}
+						avatarUrls: AvatarURLs
 						displayName: string
 						active: boolean
 						timeZone: string
@@ -205,12 +231,7 @@ export namespace JiraAPI {
 					updateAuthor: {
 						self: string
 						accountId: string
-						avatarUrls: {
-							'48x48': string
-							'24x24': string
-							'16x16': string
-							'32x32': string
-						}
+						avatarUrls: AvatarURLs
 						displayName: string
 						active: boolean
 						timeZone: string
@@ -250,8 +271,12 @@ export default class Jira {
 		this._headers.append('Accept', 'application/json')
 	}
 
-	private async _request(url: string, method?: string, body?: string) {
+	private async _request<T = any>(url: string, method?: string, body?: string): Promise<T> {
 		return fetch(this._baseUrl + url, { method, headers: this._headers, body }).then((r) => r.json())
+	}
+
+	public async withAuth(url: string, method?: string, body?: string) {
+		return fetch(this._baseUrl + url, { method, headers: this._headers, body })
 	}
 
 	public async getAttachment(attachment: any): Promise<string> {
@@ -288,6 +313,19 @@ export default class Jira {
 	public async editIssueStoryPoints(issueId: string, value: number | null) {
 		// name of the story point field is customfield_10020
 		const body = { fields: { customfield_10020: value } }
-		return this._request(`${this._baseUrl}/rest/api/2/issue/${issueId}`, 'PUT', JSON.stringify(body))
+		return this._request(`/api/2/issue/${issueId}`, 'PUT', JSON.stringify(body))
+	}
+
+	public async getIssueTypes(): Promise<JiraAPI.IssueType[]> {
+		return this._request('/api/2/issuetype')
+	}
+
+	public async getProjects(): Promise<JiraAPI.Project[]> {
+		return this._request<JiraAPI.Project[]>('/api/2/project').then((projects) => projects.sort((a, b) => a.name.localeCompare(b.name)))
+	}
+
+	public async getCreateMeta(): Promise<JiraAPI.CreateMeta[]> {
+		const res = await this._request('/api/2/issue/createmeta')
+		return res.projects
 	}
 }

@@ -11,12 +11,13 @@ import useDropdownPosition from './useDropdownPosition'
 interface DropdownProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'type' | 'onChange'> {
 	type?: ThemeType
 	placeholder?: string
-	selectedItemId?: string | number
-	onChange?(id: string | number): void
+	selectedItemId?: string
+	onChange?(id: string): void
 	loading?: boolean
 	items?: {
+		icon?: string
 		label: string
-		id: string | number
+		id: string
 	}[]
 }
 
@@ -49,10 +50,23 @@ const Dropdown: FC<DropdownProps> = ({ disabled, className, type, items, placeho
 				)}
 				{...props}
 			>
-				<span>{items?.length > 0 ? (selectedItem ? selectedItem.label : placeholder ?? 'Select item') : 'No data'}</span>
+				<span className={clsx(loading && 'text-white/0')}>
+					{items?.length > 0 ? (
+						selectedItem ? (
+							<div className='flex items-center'>
+								{selectedItem.icon ? <img className='mr-2 h-4 w-4' src={selectedItem.icon} /> : null}
+								{selectedItem.label}
+							</div>
+						) : (
+							placeholder ?? 'Select item'
+						)
+					) : (
+						'No data'
+					)}
+				</span>
 				<ChevronDownIcon className={clsx('h-4 w-3 ml-2 -mr-1', itemsAreVisible && 'rotate-180')} />
 				{loading ? (
-					<div className='w-full h-full absolute top-0 left-0 flex items-center justify-center bg-theme-secondary '>
+					<div className='w-full h-full absolute top-0 left-0 flex items-center justify-center'>
 						<Loading />
 					</div>
 				) : null}
@@ -65,17 +79,18 @@ const Dropdown: FC<DropdownProps> = ({ disabled, className, type, items, placeho
 					}}
 					className={clsx('w-max flex flex-col absolute rounded-sm overflow-auto z-10 bg-theme-secondary')}
 				>
-					{items?.map(({ label, id }, i) => (
+					{items?.map(({ label, id, icon }, i) => (
 						<div
-							onClick={() => onChange(id)}
+							onClick={() => onChange?.(id)}
 							key={id}
 							className={clsx(
 								buttonStyles[type ?? 'DEFAULT'],
 								i !== 0 && 'border-t-0',
 								i !== items.length - 1 && 'border-b-0',
-								'w-full cursor-pointer px-4 py-1.5 font-semibold text-xs transition-colors text-start'
+								'flex items-center w-full cursor-pointer px-4 py-1.5 font-semibold text-xs transition-colors text-start'
 							)}
 						>
+							{icon ? <img className='mr-2 h-4 w-4' src={icon} /> : null}
 							{label}
 						</div>
 					))}
