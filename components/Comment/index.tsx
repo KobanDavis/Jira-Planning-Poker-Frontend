@@ -1,6 +1,7 @@
 import formatLinks from 'lib/formatLinks'
 import { JiraAPI } from 'lib/jira'
 import moment from 'moment'
+import { useSession } from 'next-auth/react'
 import { FC } from 'react'
 
 interface CommentProps {
@@ -9,6 +10,7 @@ interface CommentProps {
 }
 
 const Comment: FC<CommentProps> = ({ comment, timestamp }) => {
+	const session = useSession()
 	return (
 		<div className='flex bg-theme-primary/5 text-sm p-2 mb-2'>
 			<img className='mr-2 h-8 w-8 rounded-full' src={comment.author.avatarUrls['48x48']} />
@@ -17,7 +19,7 @@ const Comment: FC<CommentProps> = ({ comment, timestamp }) => {
 					<span className='font-semibold mr-2'>{comment.author.displayName}</span>
 					<span className='text-theme-primary/30 text-xs mr-2'>{moment(timestamp).format('MMMM Do, YYYY [at] h:mm A')}</span>
 				</div>
-				<div className='py-1 pr-2' dangerouslySetInnerHTML={{ __html: formatLinks(comment.body) }} />
+				<div className='py-1 pr-2' dangerouslySetInnerHTML={{ __html: formatLinks(comment.body, session.data.resourceUrl) }} />
 			</div>
 		</div>
 	)

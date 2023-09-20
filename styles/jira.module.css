@@ -39,7 +39,7 @@
 }
 
 .issue pre {
-	@apply p-2 my-1 shadow-inner bg-theme-primary/5;
+	@apply p-2 my-1 shadow-inner bg-theme-primary/5 whitespace-pre-wrap;
 }
 
 .issue div {

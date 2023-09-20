@@ -1,7 +1,7 @@
-export default function formatLinks(s: string) {
-	const matches = Array.from(s.matchAll(/src="(.*?)"/g))
+export default function formatLinks(html: string, resourceUrl: string) {
+	const matches = Array.from(html.matchAll(/src="(.*?)"/g))
 	for (let [, match] of matches) {
-		s = s.replace(match, 'https://mondago.atlassian.net' + match)
+		html = html.replace(match, resourceUrl + match)
 	}
-	return s
+	return html
 }

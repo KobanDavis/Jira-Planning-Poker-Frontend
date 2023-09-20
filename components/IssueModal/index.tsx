@@ -7,6 +7,8 @@ import formatLinks from 'lib/formatLinks'
 import { ArrowTopRightOnSquareIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import { useJira } from 'providers/jira'
 import Modal from 'components/Modal'
+import styles from 'styles/jira.module.css'
+import { useSession } from 'next-auth/react'
 
 interface IssueProps {
 	issueId: string
@@ -16,6 +18,7 @@ interface IssueProps {
 const Issue: FC<IssueProps> = ({ issueId, close }) => {
 	const jira = useJira()
 	const [issue, setIssue] = useState<JiraAPI.Issue>(null)
+	const session = useSession()
 
 	useEffect(() => {
 		console.log(issue)
@@ -71,8 +74,8 @@ const Issue: FC<IssueProps> = ({ issueId, close }) => {
 									<div className='flex flex-col my-2 flex-1'>
 										<span className='font-bold mb-1'>Description</span>
 										<div
-											className='resize text-sm bg-theme-secondary rounded p-2 min-h-[15rem]'
-											dangerouslySetInnerHTML={{ __html: formatLinks(issue.renderedFields.description) }}
+											className={clsx(styles.issue, 'resize text-sm bg-theme-secondary rounded p-2 min-h-[15rem]')}
+											dangerouslySetInnerHTML={{ __html: formatLinks(issue.renderedFields.description, session.data.resourceUrl) }}
 										/>
 									</div>
 								) : null}
@@ -80,8 +83,8 @@ const Issue: FC<IssueProps> = ({ issueId, close }) => {
 									<div className='flex flex-col my-2 flex-1'>
 										<span className='font-bold mb-1'>Acceptance Criteria</span>
 										<div
-											className='text-sm bg-theme-secondary rounded p-2 min-h-[15rem]'
-											dangerouslySetInnerHTML={{ __html: formatLinks(issue.renderedFields.customfield_10057) }}
+											className={clsx(styles.issue, 'text-sm bg-theme-secondary rounded p-2 min-h-[15rem]')}
+											dangerouslySetInnerHTML={{ __html: formatLinks(issue.renderedFields.customfield_10057, session.data.resourceUrl) }}
 										/>
 									</div>
 								) : null}

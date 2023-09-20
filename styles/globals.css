@@ -1,8 +1,11 @@
+@import 'https://api.fontshare.com/v2/css?f[]=satoshi@1,2';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 body {
+	font-family: 'Satoshi', sans-serif;
 	@apply bg-theme-secondary text-theme-primary;
 }
 

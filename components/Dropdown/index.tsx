@@ -77,23 +77,25 @@ const Dropdown: FC<DropdownProps> = ({ disabled, className, type, items, placeho
 						...position,
 						margin: `${position.margin}px 0`,
 					}}
-					className={clsx('w-max flex flex-col absolute rounded-sm overflow-auto z-10 bg-theme-secondary')}
+					className={clsx('w-max flex flex-col absolute rounded-sm overflow-auto z-10')}
 				>
-					{items?.map(({ label, id, icon }, i) => (
-						<div
-							onClick={() => onChange?.(id)}
-							key={id}
-							className={clsx(
-								buttonStyles[type ?? 'DEFAULT'],
-								i !== 0 && 'border-t-0',
-								i !== items.length - 1 && 'border-b-0',
-								'flex items-center w-full cursor-pointer px-4 py-1.5 font-semibold text-xs transition-colors text-start'
-							)}
-						>
-							{icon ? <img className='mr-2 h-4 w-4' src={icon} /> : null}
-							{label}
-						</div>
-					))}
+					<div className='bg-theme-secondary'>
+						{items?.map(({ label, id, icon }, i) => (
+							<div
+								onClick={() => onChange?.(id)}
+								key={id}
+								className={clsx(
+									buttonStyles.DEFAULT,
+									i !== 0 && 'border-t-0',
+									i !== items.length - 1 && 'border-b-0',
+									'flex items-center w-full cursor-pointer px-4 py-1.5 font-semibold text-xs transition-colors text-start'
+								)}
+							>
+								{icon ? <img className='mr-2 h-4 w-4' src={icon} /> : null}
+								{label}
+							</div>
+						))}
+					</div>
 				</div>
 			) : null}
 		</div>
