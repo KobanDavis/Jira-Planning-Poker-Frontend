@@ -1,7 +1,7 @@
 import { Game } from 'types/backend'
 import clsx from 'clsx'
-import { Card, Button, PokerCard, Label } from 'components'
-import Input from 'components/Input'
+import { Button, Input, Label } from '@kobandavis/ui'
+import { PokerCard } from 'components'
 import { useGame } from 'providers/game'
 import { FC, ReactNode, useEffect, useState } from 'react'
 

@@ -1,4 +1,5 @@
-import { PokerCard, Button, Input, Label } from 'components'
+import { Button, Input, Label } from '@kobandavis/ui'
+import { PokerCard } from 'components'
 import { FC, useState } from 'react'
 import clsx from 'clsx'
 import { Game } from 'types/backend'
