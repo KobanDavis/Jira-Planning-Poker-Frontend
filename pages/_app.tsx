@@ -3,7 +3,7 @@ import { SessionProvider } from 'next-auth/react'
 import { AppProps } from 'next/app'
 import { GameProvider } from 'providers/game'
 import { JiraProvider } from 'providers/jira'
-import { ThemeProvider } from '@kobandavis/ui'
+import { ThemeProvider } from 'providers/theme'
 
 import 'styles/globals.css'
 

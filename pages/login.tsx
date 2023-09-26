@@ -1,5 +1,5 @@
 import { FC } from 'react'
-import { Button, Card } from '@kobandavis/ui'
+import { Button, Card } from 'components'
 import { signIn, ClientSafeProvider, getProviders, getSession } from 'next-auth/react'
 import { GetServerSideProps } from 'next'
 

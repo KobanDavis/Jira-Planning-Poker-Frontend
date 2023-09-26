@@ -2,7 +2,7 @@ import { FC } from 'react'
 
 import { getProviders, signIn, useSession } from 'next-auth/react'
 import Router from 'next/router'
-import { LoadingScreen } from '@kobandavis/ui'
+import { LoadingScreen } from 'components'
 
 interface AuthProps {
 	children?: React.ReactElement

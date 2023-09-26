@@ -12,7 +12,6 @@
 	"license": "MIT",
 	"dependencies": {
 		"@heroicons/react": "^2.0.18",
-		"@kobandavis/ui": "^0.4.0",
 		"clsx": "^2.0.0",
 		"color": "^4.2.3",
 		"moment": "^2.29.4",
