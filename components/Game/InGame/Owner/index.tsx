@@ -70,7 +70,7 @@ const Owner: FC<InGameProps> = ({}) => {
 	const hasSubmittedCard = data.cards.some((card) => card.id === self.id)
 	return (
 		<div className='select-none overflow-hidden w-full h-screen flex flex-col items-center justify-center'>
-			<div className='flex items-center mb-8 space-x-2'>
+			<div className={clsx('flex items-center mb-8 space-x-2 transition-opacity', isReady ? 'opacity-0' : 'opacity-100')}>
 				<Label
 					type={!round.id.endsWith('???') ? 'primary' : 'secondary'}
 					onClick={() => {
@@ -78,7 +78,7 @@ const Owner: FC<InGameProps> = ({}) => {
 							setModalVisibility(true)
 						}
 					}}
-					className={clsx('transition-opacity normal-case', !round.id.endsWith('???') && 'cursor-pointer', isReady ? 'opacity-0' : 'opacity-100')}
+					className={clsx('normal-case', !round.id.endsWith('???') && 'cursor-pointer')}
 				>
 					[{round?.id}]
 				</Label>

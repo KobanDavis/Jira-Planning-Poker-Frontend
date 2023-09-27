@@ -5,6 +5,7 @@ import { useJira } from 'providers/jira'
 import { useQS } from 'hooks'
 import { useGame } from 'providers/game'
 import { useRouter } from 'next/router'
+import ThemeButtons from 'components/ThemeButtons'
 
 type Keys = 'board' | 'sprint'
 
@@ -76,7 +77,7 @@ const App: FC = () => {
 				<Card className='max-w-lg w-full flex m-4'>
 					<div className='flex items-center justify-between text-xl'>
 						<span>Planning poker</span>
-						<span>🃏</span>
+						<ThemeButtons />
 					</div>
 				</Card>
 				<Card title='Find planning sprint' className='min-w-[30rem] max-w-[80rem]'>
