@@ -1,6 +1,6 @@
 import { Game } from 'types/backend'
 import clsx from 'clsx'
-import { Button, Card, Label, Modals } from 'components'
+import { Button, Card, Dropdown, Label, Modals } from 'components'
 import { useGame } from 'providers/game'
 import { FC, useState } from 'react'
 import { borderBase } from 'lib/styles'
@@ -35,13 +35,11 @@ const Section: FC<SectionProps> = ({ rounds, title, selectedRoundId, setSelected
 					>
 						<div className='flex items-center truncate'>
 							<Label
-								type={!round.id.endsWith('???') ? 'primary' : 'secondary'}
-								className={clsx('mr-1.5', !round.id.endsWith('???') && 'cursor-pointer')}
+								type='primary'
+								className='mr-1.5 cursor-pointer'
 								onClick={(e) => {
 									e.stopPropagation()
-									if (!round.id.endsWith('???')) {
-										handlePreview(round.id)
-									}
+									handlePreview(round.id)
 								}}
 							>
 								{round.id}
@@ -57,6 +55,13 @@ const Section: FC<SectionProps> = ({ rounds, title, selectedRoundId, setSelected
 		</>
 	) : null
 }
+
+const transitions = [
+	{ id: Game.Resolution.TODO.toString(), label: 'Todo' },
+	{ id: Game.Resolution.REVIEWING.toString(), label: 'Review' },
+	{ id: Game.Resolution.ACCEPTED.toString(), label: 'Accept' },
+	{ id: Game.Resolution.REJECTED.toString(), label: 'Reject' },
+]
 
 const PreGame: FC = () => {
 	const { data, socket, self } = useGame()
@@ -77,16 +82,14 @@ const PreGame: FC = () => {
 
 	const selectedRound = data.rounds.find((round) => round.id === selectedRoundId)
 
-	const updateResolution = (round: Game.Round, resolution: Game.Resolution) => {
-		round.resolution = resolution
-		socket.emit('ingame/round', round)
-	}
-
-	const handleNewIssue = ({}) => {}
-
 	const vote = (roundId: string) => {
 		socket.emit('ingame/currentRound', roundId)
 		socket.emit('ingame/state', Game.State.INGAME)
+	}
+
+	const handleTransition = (id: string) => {
+		selectedRound.resolution = Number(id) as Game.Resolution
+		socket.emit('ingame/round', selectedRound)
 	}
 
 	const openPreview = () => setIssueModalVisibility(true)
@@ -97,7 +100,7 @@ const PreGame: FC = () => {
 				title={
 					<div className={clsx(borderBase, 'border-0 border-b', 'flex justify-between items-center py-2 px-4 font-semibold text-lg')}>
 						<span>{data.name}</span>
-						<PlusIcon onClick={() => setRoundModalVisibility(true)} className='h-6 w-6 cursor-pointer' />
+						{self.role === 'owner' ? <PlusIcon onClick={() => setRoundModalVisibility(true)} className='h-6 w-6 cursor-pointer' /> : null}
 					</div>
 				}
 			>
@@ -114,33 +117,20 @@ const PreGame: FC = () => {
 					))}
 				</div>
 			</Card>
-			<div className='space-x-2'>
+			<div className='space-x-2 flex'>
 				<Button disabled={selectedRoundId === null || isNewIssue} onClick={openPreview}>
 					Preview
 				</Button>
+				<Dropdown disabled={selectedRoundId === null} placeholder='Transition' items={transitions} onChange={handleTransition} />
+
 				{self.role === 'owner' ? (
-					<>
-						<Button
-							className='text-red-600'
-							disabled={selectedRoundId === null || selectedRound.resolution === Game.Resolution.REJECTED}
-							onClick={() => updateResolution(selectedRound, Game.Resolution.REJECTED)}
-						>
-							Reject
-						</Button>
-						<Button
-							disabled={selectedRoundId === null || selectedRound.resolution === Game.Resolution.ACCEPTED}
-							onClick={() => updateResolution(selectedRound, Game.Resolution.ACCEPTED)}
-						>
-							Accept
-						</Button>
-						<Button
-							type='primary'
-							disabled={selectedRoundId === null || selectedRound.resolution !== Game.Resolution.ACCEPTED}
-							onClick={() => vote(selectedRoundId)}
-						>
-							Vote
-						</Button>
-					</>
+					<Button
+						type='primary'
+						disabled={selectedRoundId === null || selectedRound.resolution !== Game.Resolution.ACCEPTED}
+						onClick={() => vote(selectedRoundId)}
+					>
+						Vote
+					</Button>
 				) : null}
 			</div>
 			{issueModalVisibility ? <Modals.Issue close={() => setIssueModalVisibility(false)} issueId={selectedRoundId} /> : null}

@@ -39,7 +39,7 @@ const Dropdown: FC<DropdownProps> = ({ disabled, className, type, items, placeho
 	return (
 		<div>
 			<Button
-				disabled={disabled || items ? items.length === 0 : true}
+				disabled={disabled || (items ? items.length === 0 : true)}
 				type={type}
 				ref={dropdownRef}
 				onClick={() => setItemsAreVisible(loading ? false : !itemsAreVisible)}

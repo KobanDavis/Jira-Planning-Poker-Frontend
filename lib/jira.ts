@@ -1,5 +1,9 @@
 import { Session } from 'next-auth'
 
+type RecursivePartial<T> = {
+	[P in keyof T]?: RecursivePartial<T[P]>
+}
+
 export namespace JiraAPI {
 	export interface AvatarURLs {
 		'48x48': string
@@ -336,7 +340,17 @@ export default class Jira {
 		return res.projects
 	}
 
-	public async createNewIssue(): Promise<void> {
-		// const res = await this._request('/api/2/issue', 'POST')
+	public async createNewIssue(issueTypeId: string, projectId: string, summary: string): Promise<any> {
+		const body: RecursivePartial<JiraAPI.Issue> = {
+			fields: {
+				issuetype: { id: issueTypeId },
+				project: { id: projectId },
+				summary,
+			},
+		}
+		this._headers.append('Content-Type', 'application/json')
+		const res = this._request('/api/2/issue', 'POST', JSON.stringify(body))
+		this._headers.delete('Content-Type')
+		return res
 	}
 }

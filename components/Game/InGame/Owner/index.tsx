@@ -71,15 +71,7 @@ const Owner: FC<InGameProps> = ({}) => {
 	return (
 		<div className='select-none overflow-hidden w-full h-screen flex flex-col items-center justify-center'>
 			<div className={clsx('flex items-center mb-8 space-x-2 transition-opacity', isReady ? 'opacity-0' : 'opacity-100')}>
-				<Label
-					type={!round.id.endsWith('???') ? 'primary' : 'secondary'}
-					onClick={() => {
-						if (!round.id.endsWith('???')) {
-							setModalVisibility(true)
-						}
-					}}
-					className={clsx('normal-case', !round.id.endsWith('???') && 'cursor-pointer')}
-				>
+				<Label type='primary' onClick={() => setModalVisibility(true)} className='normal-case cursor-pointer'>
 					[{round?.id}]
 				</Label>
 				<span className='transition-colors font-semibold'>{round?.title}</span>

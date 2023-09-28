@@ -5,6 +5,7 @@ export namespace Game {
 		TODO,
 		ACCEPTED,
 		REJECTED,
+		REVIEWING,
 	}
 
 	export enum State {

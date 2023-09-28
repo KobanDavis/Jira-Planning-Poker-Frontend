@@ -35,16 +35,11 @@ const FinishPlanning: FC<FinishPlanningProps> = ({ close }) => {
 				<Card className='h-min min-w-[20rem]' title='Finish Planning'>
 					<div className='flex flex-col'>
 						<div>
-							{/* TODO */}
-							{/* <span className='font-semibold'>{newIssues.length || 'No'}</span> new issue{newIssues.length === 1 ? '' : 's'} will be created. */}
-							I haven't bothered to <span className='font-semibold'>create</span> issues yet so make them yourself please.
-						</div>
-						<div>
 							<span className='font-semibold'>{estimates.length || 'No'}</span> issue
 							{estimates.length === 1 ? '' : 's'} will be updated.
 						</div>
 						<Button disabled={estimates.length === 0} onClick={finish} className='mt-4 flex justify-center' type='primary'>
-							{loading ? <Loading type='primary' size={4} /> : 'Save changes'}
+							{loading ? <Loading type='primary' size={4} /> : 'Update story points'}
 						</Button>
 					</div>
 				</Card>

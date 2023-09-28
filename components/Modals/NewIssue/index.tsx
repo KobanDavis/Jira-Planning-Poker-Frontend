@@ -16,7 +16,6 @@ const NewIssue: FC<NewIssueProps> = ({ close }) => {
 	const { socket } = useGame()
 
 	const [meta, setMeta] = useState<JiraAPI.CreateMeta[]>(null)
-	console.log(meta)
 	const [projectId, setProjectId] = useState<string>(null)
 	const [issueTypeId, setIssueTypeId] = useState<string>(null)
 	const [summary, setSummary] = useState<string>(null)
@@ -27,9 +26,10 @@ const NewIssue: FC<NewIssueProps> = ({ close }) => {
 
 	const selectedProject = meta?.find((project) => project.id === projectId)
 
-	const createIssue = () => {
-		const projectKey = selectedProject.key
-		socket.emit('ingame/round', { id: projectKey + '-???', resolution: Game.Resolution.TODO, title: summary, value: null })
+	const createIssue = async () => {
+		const res = await jira.createNewIssue(issueTypeId, selectedProject.id, summary)
+		console.log(res)
+		socket.emit('ingame/round', { id: res.key, resolution: Game.Resolution.TODO, title: summary, value: null })
 		close()
 	}
 
@@ -71,7 +71,7 @@ const NewIssue: FC<NewIssueProps> = ({ close }) => {
 							</div>
 						</div>
 						<Button className='w-full' disabled={!projectId || !issueTypeId || !summary} onClick={createIssue} type='primary'>
-							Create issue
+							Create issue in Jira
 						</Button>
 					</div>
 				</Card>
