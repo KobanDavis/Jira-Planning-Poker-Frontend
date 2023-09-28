@@ -146,9 +146,11 @@ const PreGame: FC = () => {
 			{issueModalVisibility ? <Modals.Issue close={() => setIssueModalVisibility(false)} issueId={selectedRoundId} /> : null}
 			{roundModalVisibility ? <Modals.NewIssue close={() => setRoundModalVisibility(false)} /> : null}
 
-			<Button onClick={() => setFinishModalVisibility(true)} type='primary' className='fixed bottom-4 right-4'>
-				Finish Planning
-			</Button>
+			{self.role === 'owner' ? (
+				<Button onClick={() => setFinishModalVisibility(true)} type='primary' className='fixed bottom-4 right-4'>
+					Finish Planning
+				</Button>
+			) : null}
 			{finishModalVisibility ? <Modals.FinishPlanning close={() => setFinishModalVisibility(false)} /> : null}
 		</div>
 	)
