@@ -1,6 +1,6 @@
 import { useGame } from 'providers/game'
 import { FC, useEffect, useState } from 'react'
-import { Button, Input, IssueModal, Label, PokerCard } from 'components'
+import { Button, Input, Label, Modals, PokerCard } from 'components'
 import clsx from 'clsx'
 import { Game } from 'types/backend'
 import { EyeIcon, EyeSlashIcon, PaperAirplaneIcon } from '@heroicons/react/24/solid'
@@ -143,7 +143,7 @@ const Owner: FC<InGameProps> = ({}) => {
 					</Button>
 				</div>
 			</div>
-			{modalVisibility ? <IssueModal close={() => setModalVisibility(false)} issueId={data.currentRound} /> : null}
+			{modalVisibility ? <Modals.Issue close={() => setModalVisibility(false)} issueId={data.currentRound} /> : null}
 		</div>
 	)
 }

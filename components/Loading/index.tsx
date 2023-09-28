@@ -1,17 +1,20 @@
+import clsx from 'clsx'
 import { FC } from 'react'
+import { ThemeType } from 'types'
 
 interface LoadingProps {
 	size?: number
+	type?: ThemeType
 }
 
-const Loading: FC<LoadingProps> = ({ size = 4 }) => {
+const Loading: FC<LoadingProps> = ({ size = 4, type }) => {
 	return (
 		<div
 			style={{
 				height: size * 4,
 				width: size * 4,
 			}}
-			className='border-2 rounded-full border-theme-primary border-t-transparent animate-spin'
+			className={clsx(type === 'primary' ? 'border-theme-secondary' : 'border-theme-primary', 'border-2 rounded-full border-t-transparent animate-spin')}
 		/>
 	)
 }

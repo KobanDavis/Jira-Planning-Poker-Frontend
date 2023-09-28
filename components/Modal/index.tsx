@@ -16,11 +16,11 @@ const Modal: FC<ModalProps> = ({ close, loading, children }) => {
 	}
 
 	return loading ? (
-		<div className='flex items-center justify-center h-screen w-full fixed top-0 left-0 backdrop-blur'>
+		<div className='flex items-center justify-center h-screen w-full fixed top-0 left-0 backdrop-blur-xl'>
 			<Loading size={8} />
 		</div>
 	) : (
-		<div onClick={handleOutsideClick} className={clsx('flex justify-center h-screen w-full fixed top-0 left-0 backdrop-blur p-4 overflow-y-auto')}>
+		<div onClick={handleOutsideClick} className={clsx('flex justify-center h-screen w-full fixed top-0 left-0 backdrop-blur-xl p-4 overflow-y-auto')}>
 			{children()}
 		</div>
 	)

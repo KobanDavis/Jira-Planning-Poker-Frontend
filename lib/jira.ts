@@ -271,8 +271,8 @@ export default class Jira {
 		this._headers.append('Accept', 'application/json')
 	}
 
-	private async _request<T = any>(url: string, method?: string, body?: string): Promise<T> {
-		return fetch(this._baseUrl + url, { method, headers: this._headers, body }).then((r) => r.json())
+	private async _request<T = any>(url: string, method?: string, body?: string, noJsonPlz: boolean = false): Promise<T> {
+		return fetch(this._baseUrl + url, { method, headers: this._headers, body }).then((r) => (noJsonPlz ? r : r.json()))
 	}
 
 	public async withAuth(url: string, method?: string, body?: string) {
@@ -313,7 +313,14 @@ export default class Jira {
 	public async editIssueStoryPoints(issueId: string, value: number | null) {
 		// name of the story point field is customfield_10020
 		const body = { fields: { customfield_10020: value } }
-		return this._request(`/api/2/issue/${issueId}`, 'PUT', JSON.stringify(body))
+		this._headers.append('Content-Type', 'application/json')
+		const res = this._request(`/api/3/issue/${issueId}`, 'PUT', JSON.stringify(body), true)
+		this._headers.delete('Content-Type')
+		return res
+	}
+
+	public async getFieldTypes(): Promise<JiraAPI.IssueType[]> {
+		return this._request('/api/2/field')
 	}
 
 	public async getIssueTypes(): Promise<JiraAPI.IssueType[]> {
@@ -327,5 +334,9 @@ export default class Jira {
 	public async getCreateMeta(): Promise<JiraAPI.CreateMeta[]> {
 		const res = await this._request('/api/2/issue/createmeta')
 		return res.projects
+	}
+
+	public async createNewIssue(): Promise<void> {
+		// const res = await this._request('/api/2/issue', 'POST')
 	}
 }

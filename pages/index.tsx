@@ -1,5 +1,5 @@
-import { FC, useEffect, useMemo, useState } from 'react'
-import { Button, Card, Dropdown, Issue, IssueModal, Loading } from 'components'
+import { FC, useEffect, useState } from 'react'
+import { Button, Card, Dropdown, Issue, Loading, Modals } from 'components'
 import { JiraAPI } from 'lib/jira'
 import { useJira } from 'providers/jira'
 import { useQS } from 'hooks'
@@ -140,7 +140,7 @@ const App: FC = () => {
 					</Button>
 				) : null}
 			</div>
-			{selectedIssueId ? <IssueModal close={() => setSelectedIssueId(null)} issueId={selectedIssueId} /> : null}
+			{selectedIssueId ? <Modals.Issue close={() => setSelectedIssueId(null)} issueId={selectedIssueId} /> : null}
 		</div>
 	)
 }

@@ -1,17 +1,17 @@
 import clsx from 'clsx'
-import { Button, Card, Dropdown, Input, Label, Modal } from 'components'
-import Jira, { JiraAPI } from 'lib/jira'
-import { backgroundSecondaryActive, backgroundSecondaryHover, borderActive, borderHover } from 'lib/styles'
+import { Button, Card, Dropdown, Label, Modal } from 'components'
+import { JiraAPI } from 'lib/jira'
+import { backgroundSecondaryHover, borderHover } from 'lib/styles'
 import { useGame } from 'providers/game'
 import { useJira } from 'providers/jira'
 import { FC, useEffect, useState } from 'react'
 import { Game } from 'types/backend'
 
-interface NewIssueModalProps {
+interface NewIssueProps {
 	close(): void
 }
 
-const NewIssueModal: FC<NewIssueModalProps> = ({ close }) => {
+const NewIssue: FC<NewIssueProps> = ({ close }) => {
 	const jira = useJira()
 	const { socket } = useGame()
 
@@ -21,20 +21,15 @@ const NewIssueModal: FC<NewIssueModalProps> = ({ close }) => {
 	const [issueTypeId, setIssueTypeId] = useState<string>(null)
 	const [summary, setSummary] = useState<string>(null)
 
-	const [loading, setLoading] = useState<boolean>(false)
 	useEffect(() => {
 		jira.getCreateMeta().then(setMeta)
 	}, [])
 
 	const selectedProject = meta?.find((project) => project.id === projectId)
 
-	const createIssue = async () => {
-		setLoading(true)
-		// create issue in jira
-		// const res = await jira.createIssue({ projectId, issueTypeId, summary })
+	const createIssue = () => {
 		const projectKey = selectedProject.key
 		socket.emit('ingame/round', { id: projectKey + '-???', resolution: Game.Resolution.TODO, title: summary, value: null })
-		setLoading(false)
 		close()
 	}
 
@@ -76,7 +71,7 @@ const NewIssueModal: FC<NewIssueModalProps> = ({ close }) => {
 							</div>
 						</div>
 						<Button className='w-full' disabled={!projectId || !issueTypeId || !summary} onClick={createIssue} type='primary'>
-							Create issue in Jira
+							Create issue
 						</Button>
 					</div>
 				</Card>
@@ -85,4 +80,4 @@ const NewIssueModal: FC<NewIssueModalProps> = ({ close }) => {
 	)
 }
 
-export default NewIssueModal
+export default NewIssue

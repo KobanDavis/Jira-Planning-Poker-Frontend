@@ -1,6 +1,6 @@
 import { Game } from 'types/backend'
 import clsx from 'clsx'
-import { Button, Card, Dropdown, Input, IssueModal, NewIssueModal, Label, Modal } from 'components'
+import { Button, Card, Label, Modals } from 'components'
 import { useGame } from 'providers/game'
 import { FC, useState } from 'react'
 import { borderBase } from 'lib/styles'
@@ -60,8 +60,11 @@ const Section: FC<SectionProps> = ({ rounds, title, selectedRoundId, setSelected
 
 const PreGame: FC = () => {
 	const { data, socket, self } = useGame()
+
 	const [issueModalVisibility, setIssueModalVisibility] = useState<boolean>(false)
 	const [roundModalVisibility, setRoundModalVisibility] = useState<boolean>(false)
+	const [finishModalVisibility, setFinishModalVisibility] = useState<boolean>(false)
+
 	const [selectedRoundId, setSelectedRoundId] = useState<string>(null)
 
 	const sections = data.rounds.reduce<Partial<Record<Game.Resolution, Game.Round[]>>>((sections, round) => {
@@ -140,8 +143,13 @@ const PreGame: FC = () => {
 					</>
 				) : null}
 			</div>
-			{issueModalVisibility ? <IssueModal close={() => setIssueModalVisibility(false)} issueId={selectedRoundId} /> : null}
-			{roundModalVisibility ? <NewIssueModal close={() => setRoundModalVisibility(false)} /> : null}
+			{issueModalVisibility ? <Modals.Issue close={() => setIssueModalVisibility(false)} issueId={selectedRoundId} /> : null}
+			{roundModalVisibility ? <Modals.NewIssue close={() => setRoundModalVisibility(false)} /> : null}
+
+			<Button onClick={() => setFinishModalVisibility(true)} type='primary' className='fixed bottom-4 right-4'>
+				Finish Planning
+			</Button>
+			{finishModalVisibility ? <Modals.FinishPlanning close={() => setFinishModalVisibility(false)} /> : null}
 		</div>
 	)
 }
