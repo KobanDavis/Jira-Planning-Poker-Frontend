@@ -1,14 +1,15 @@
-import { PokerCard, Button, Input, Label } from 'components'
+import { PokerCard, Button, Input, Label, Modals } from 'components'
 import { FC, useState } from 'react'
 import clsx from 'clsx'
 import { Game } from 'types/backend'
 import { useGame } from 'providers/game'
 
 const Player: FC = () => {
-	const [value, setValue] = useState<string>('')
-	const [isFlipped, setIsFlipped] = useState(true)
-	const [flyout, setFlyout] = useState(false)
 	const { socket, self, data } = useGame()
+	const [value, setValue] = useState<string>('')
+	const [isFlipped, setIsFlipped] = useState<boolean>(true)
+	const [flyout, setFlyout] = useState<boolean>(false)
+	const [modalVisibility, setModalVisibility] = useState<boolean>(false)
 
 	const submit = () => {
 		setIsFlipped(false)
@@ -26,9 +27,23 @@ const Player: FC = () => {
 	}
 
 	const selfCard = data.cards.find((card) => card.id === self.id)
-
+	const round = data.rounds.find((round) => round.id === data.currentRound)
 	return (
 		<div className='flex flex-col items-center justify-center h-screen'>
+			<div className={clsx('flex items-center mb-8 space-x-2 transition-opacity', 'opacity-100')}>
+				<Label
+					type={!round.id.endsWith('???') ? 'primary' : 'secondary'}
+					onClick={() => {
+						if (!round.id.endsWith('???')) {
+							setModalVisibility(true)
+						}
+					}}
+					className={clsx('normal-case', !round.id.endsWith('???') && 'cursor-pointer')}
+				>
+					[{round?.id}]
+				</Label>
+				<span className='transition-colors font-semibold'>{round?.title}</span>
+			</div>
 			{!selfCard ? (
 				<>
 					<div
@@ -56,6 +71,7 @@ const Player: FC = () => {
 					</span>
 				</div>
 			)}
+			{modalVisibility ? <Modals.Issue close={() => setModalVisibility(false)} issueId={data.currentRound} /> : null}
 		</div>
 	)
 }
