@@ -43,7 +43,7 @@ const FinishPlanning: FC<FinishPlanningProps> = ({ close }) => {
 							<span className='font-semibold'>{estimates.length || 'No'}</span> issue
 							{estimates.length === 1 ? '' : 's'} will be updated.
 						</div>
-						<Button onClick={finish} className='mt-4 flex justify-center' type='primary'>
+						<Button disabled={estimates.length === 0} onClick={finish} className='mt-4 flex justify-center' type='primary'>
 							{loading ? <Loading type='primary' size={4} /> : 'Save changes'}
 						</Button>
 					</div>
