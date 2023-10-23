@@ -1,9 +1,7 @@
-import Card from 'components/Card'
-import Modal from 'components/Modal'
+import { FC, useState } from 'react'
+import { Button, Loading, Card, Modal } from '@kobandavis/ui'
 import { useGame } from 'providers/game'
 import { useJira } from 'providers/jira'
-import { FC, useState } from 'react'
-import { Button, Loading } from 'components'
 
 interface FinishPlanningProps {
 	close(): void

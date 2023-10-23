@@ -1,10 +1,10 @@
-import { Game } from 'types/backend'
 import clsx from 'clsx'
-import { Button, Card, Dropdown, Label, Modals } from 'components'
-import { useGame } from 'providers/game'
 import { FC, useState } from 'react'
-import { borderBase } from 'lib/styles'
+import { Button, Card, Dropdown, Label, borderBase } from '@kobandavis/ui'
+import { Modals } from 'components'
 import { PlusIcon } from '@heroicons/react/24/solid'
+import { useGame } from 'providers/game'
+import { Game } from 'types/backend'
 
 interface SectionProps {
 	title: string

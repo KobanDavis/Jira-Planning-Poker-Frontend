@@ -1,9 +1,10 @@
-import { useGame } from 'providers/game'
-import { FC, useEffect, useState } from 'react'
-import { Button, Input, Label, Modals, PokerCard } from 'components'
 import clsx from 'clsx'
-import { Game } from 'types/backend'
+import { FC, useEffect, useState } from 'react'
+import { Button, Input, Label } from '@kobandavis/ui'
+import { Modals, PokerCard } from 'components'
+import { useGame } from 'providers/game'
 import { EyeIcon, EyeSlashIcon, PaperAirplaneIcon } from '@heroicons/react/24/solid'
+import { Game } from 'types/backend'
 
 interface InGameProps {}
 const FlyInCard: FC<{ isStraight: boolean }> = ({ isStraight }) => {

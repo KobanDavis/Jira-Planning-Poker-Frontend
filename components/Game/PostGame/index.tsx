@@ -1,9 +1,9 @@
-import { Game } from 'types/backend'
 import clsx from 'clsx'
-import { Card, Button, PokerCard, Label } from 'components'
-import Input from 'components/Input'
-import { useGame } from 'providers/game'
 import { FC, ReactNode, useEffect, useState } from 'react'
+import { Input, Button, Label } from '@kobandavis/ui'
+import { PokerCard } from 'components'
+import { useGame } from 'providers/game'
+import { Game } from 'types/backend'
 
 const Animation: FC<{ delay: number; children: ReactNode }> = ({ delay, children }) => {
 	const [y, setY] = useState(200)

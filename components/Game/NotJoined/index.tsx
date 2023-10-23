@@ -1,5 +1,4 @@
-import Button from 'components/Button'
-import Input from 'components/Input'
+import { Button, Input } from '@kobandavis/ui'
 import { useGame } from 'providers/game'
 import { FC, useState } from 'react'
 

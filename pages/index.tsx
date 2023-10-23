@@ -1,11 +1,11 @@
 import { FC, useEffect, useState } from 'react'
-import { Button, Card, Dropdown, Issue, Loading, Modals } from 'components'
+import { Button, Card, Dropdown, Loading } from '@kobandavis/ui'
+import { Issue, Modals, ThemeButtons } from 'components'
 import { JiraAPI } from 'lib/jira'
 import { useJira } from 'providers/jira'
 import { useQS } from 'hooks'
 import { useGame } from 'providers/game'
 import { useRouter } from 'next/router'
-import ThemeButtons from 'components/ThemeButtons'
 
 type Keys = 'board' | 'sprint'
 

@@ -1,10 +1,9 @@
 import clsx from 'clsx'
-import { Button, Card, Dropdown, Label, Modal } from 'components'
+import { FC, useEffect, useState } from 'react'
+import { Button, Card, Dropdown, Label, Modal, backgroundSecondaryHover, borderHover } from '@kobandavis/ui'
 import { JiraAPI } from 'lib/jira'
-import { backgroundSecondaryHover, borderHover } from 'lib/styles'
 import { useGame } from 'providers/game'
 import { useJira } from 'providers/jira'
-import { FC, useEffect, useState } from 'react'
 import { Game } from 'types/backend'
 
 interface NewIssueProps {

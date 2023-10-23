@@ -1,10 +1,10 @@
 import { Game } from 'types/backend'
-import { LoadingScreen } from 'components'
 import { NotJoined, Lobby, PreGame, PostGame, InGame } from 'components/Game'
 import { useRouter } from 'next/router'
 import { useGame } from 'providers/game'
 import { useJira } from 'providers/jira'
 import { FC, useEffect, useState } from 'react'
+import { LoadingScreen } from '@kobandavis/ui'
 
 const Room: FC = () => {
 	const router = useRouter()
