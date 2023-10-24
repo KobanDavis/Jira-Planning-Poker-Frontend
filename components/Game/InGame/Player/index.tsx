@@ -1,7 +1,8 @@
-import { Button, Input, Label } from '@kobandavis/ui'
-import { PokerCard, Modals } from 'components'
 import { FC, useState } from 'react'
 import clsx from 'clsx'
+
+import { Label } from '@kobandavis/ui'
+import { PokerCard, Modals, VoteButtons } from 'components'
 import { Game } from 'types/backend'
 import { useGame } from 'providers/game'
 
@@ -12,7 +13,8 @@ const Player: FC = () => {
 	const [flyout, setFlyout] = useState<boolean>(false)
 	const [modalVisibility, setModalVisibility] = useState<boolean>(false)
 
-	const submit = () => {
+	const submit = (vote) => {
+		setValue(vote)
 		setIsFlipped(false)
 		setTimeout(() => {
 			setFlyout(true)
@@ -20,7 +22,7 @@ const Player: FC = () => {
 				const card: Game.Card = {
 					id: self.id,
 					name: self.name,
-					value,
+					value: vote
 				}
 				socket.emit('ingame/card', card)
 			}, 300)
@@ -43,17 +45,13 @@ const Player: FC = () => {
 						className='transition-all duration-300'
 						style={{
 							transform: flyout ? `translateX(-${window.innerWidth}px)` : 'translateX(-0px)',
-							opacity: Number(!flyout),
+							opacity: Number(!flyout)
 						}}
 					>
 						<PokerCard isFlipped={isFlipped} value={value} className='relative flex justify-center' />
 					</div>
-					<div className={clsx('flex flex-col transition-opacity mt-2', isFlipped ? 'opacity-100' : 'opacity-0')}>
-						<Label>Estimate</Label>
-						<Input className='mt-2' value={value} onChange={(e) => setValue((e.target as any).value)} />
-						<Button disabled={Number(value) < 0 || value.length === 0} className='mt-2' onClick={submit}>
-							Submit
-						</Button>
+					<div className={clsx('flex flex-col transition-opacity mt-8', isFlipped ? 'opacity-100' : 'opacity-0')}>
+						<VoteButtons submit={submit} />
 					</div>
 				</>
 			) : (
