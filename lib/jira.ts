@@ -1,4 +1,5 @@
 import { Session } from 'next-auth'
+import { SessionContextValue } from 'next-auth/react'
 
 type RecursivePartial<T> = {
 	[P in keyof T]?: RecursivePartial<T[P]>
@@ -269,13 +270,14 @@ export default class Jira {
 	private _headers = new Headers()
 	private _baseUrl: string
 
-	constructor(private _session: Session) {
+	constructor(private _session: Session, private _updateSession: SessionContextValue['update']) {
 		this._baseUrl = `https://api.atlassian.com/ex/jira/${this._session.cloudId}/rest`
 		this._headers.append('Authorization', `Bearer ${this._session.token}`)
 		this._headers.append('Accept', 'application/json')
 	}
 
 	private async _request<T = any>(url: string, method?: string, body?: string, noJsonPlz: boolean = false): Promise<T> {
+		if (Date.now() > this._session.expires) await this._updateSession()
 		return fetch(this._baseUrl + url, { method, headers: this._headers, body }).then((r) => (noJsonPlz ? r : r.json()))
 	}
 
@@ -345,8 +347,8 @@ export default class Jira {
 			fields: {
 				issuetype: { id: issueTypeId },
 				project: { id: projectId },
-				summary,
-			},
+				summary
+			}
 		}
 		this._headers.append('Content-Type', 'application/json')
 		const res = this._request('/api/2/issue', 'POST', JSON.stringify(body))

@@ -7,6 +7,7 @@ declare module 'next-auth' {
 		token: string
 		cloudId: string
 		resourceUrl: string
+		expires: number
 	}
 }
 
