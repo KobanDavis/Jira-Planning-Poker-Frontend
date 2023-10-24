@@ -43,7 +43,7 @@ const App: FC = () => {
 	useEffect(() => {
 		setQS({
 			...(selectedBoardId ? { board: selectedBoardId } : {}),
-			...(selectedSprintId ? { sprint: selectedSprintId } : {}),
+			...(selectedSprintId ? { sprint: selectedSprintId } : {})
 		})
 	}, [selectedBoardId, selectedSprintId])
 
@@ -74,12 +74,9 @@ const App: FC = () => {
 	return (
 		<div className='bg-theme-secondary text-theme-primary'>
 			<div className='p-4 flex flex-col items-center w-screen min-h-screen space-y-4'>
-				<Card className='max-w-lg w-full flex m-4'>
-					<div className='flex items-center justify-between text-xl'>
-						<span>Planning poker</span>
-						<ThemeButtons />
-					</div>
-				</Card>
+				<div className='flex items-center justify-between font-semibold text-3xl my-4'>
+					<span>Planning poker 🃏</span>
+				</div>
 				<Card title='Find planning sprint' className='min-w-[30rem] max-w-[80rem]'>
 					<div className='flex flex-col space-y-2'>
 						<div className='flex space-x-2'>
