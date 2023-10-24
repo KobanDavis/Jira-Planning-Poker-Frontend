@@ -75,32 +75,44 @@ const Owner: FC<InGameProps> = ({}) => {
 				</Label>
 				<span className='transition-colors font-semibold'>{round?.title}</span>
 			</div>
-			<div
-				className={clsx(
-					'flex items-center justify-center transition-all duration-500 relative rounded shrink-0 h-[21rem] w-[15rem] border-4',
-					data.cards.length === data.players.length ? 'border-solid border-theme-primary' : 'border-dashed border-theme-primary/15',
-					flyout ? 'opacity-0' : 'delay-500 opacity-100'
-				)}
-			>
+			<div className='relative'>
 				<div
-					className='flex items-center justify-center w-full h-full absolute transition-all duration-500'
-					style={{ transform: flyout ? `translateY(-${window.innerHeight / 2 + 320}px)` : 'translateY(0px)', opacity: flyout ? 0 : 1 }}
-				>
-					{data.cards.map((card) => (
-						<FlyInCard key={card.id} isStraight={isReady} />
-					))}
-				</div>
-			</div>
-			<span className={clsx('my-4 transition-opacity', isReady ? 'opacity-0' : 'opacity-100')}>
-				<span
 					className={clsx(
-						'transition-colors font-bold',
-						data.cards.length === data.players.length ? 'text-theme-primary' : 'text-theme-primary/15'
+						'flex items-center justify-center transition-all duration-500 relative rounded shrink-0 h-[21rem] w-[15rem] border-4',
+						data.cards.length === data.players.length ? 'border-solid border-theme-primary' : 'border-dashed border-theme-primary/15',
+						flyout ? 'opacity-0' : 'delay-500 opacity-100'
 					)}
 				>
-					{data.cards.length} / {data.players.length} cards
+					<div
+						className='flex items-center justify-center w-full h-full absolute transition-all duration-500'
+						style={{ transform: flyout ? `translateY(-${window.innerHeight / 2 + 320}px)` : 'translateY(0px)', opacity: flyout ? 0 : 1 }}
+					>
+						{data.cards.map((card) => (
+							<FlyInCard key={card.id} isStraight={isReady} />
+						))}
+					</div>
+				</div>
+				<span
+					className={clsx(
+						'-z-10 flex flex-col absolute top-0 left-full w-max overflow-y-auto max-h-full ml-8 py-4 transition-opacity',
+						isReady ? 'opacity-0' : 'opacity-100'
+					)}
+				>
+					<span
+						className={clsx(
+							'transition-colors font-bold',
+							data.cards.length === data.players.length ? 'text-theme-primary' : 'text-theme-primary/15'
+						)}
+					>
+						{data.cards.length} / {data.players.length} cards
+					</span>
+					{data.players.map((player) => (
+						<span className={clsx(data.cards.some((card) => card.id === player.id) ? 'text-theme-primary' : 'text-theme-primary/15')}>
+							{player.name}
+						</span>
+					))}
 				</span>
-			</span>
+			</div>
 			<div className={clsx('flex flex-col items-center transition-opacity space-y-2', flyout ? 'opacity-0' : 'opacity-100')}>
 				<div className='flex flex-col transition-opacity mt-2 mb-4'>
 					{hasSubmittedCard === false ? <VoteButtons submit={submit} /> : null}

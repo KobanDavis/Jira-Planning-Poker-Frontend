@@ -6,8 +6,9 @@ import { useRouter } from 'next/router'
 import { useGame } from 'providers/game'
 import { useJira } from 'providers/jira'
 import { LoadingScreen } from '@kobandavis/ui'
-import { Cog6ToothIcon } from '@heroicons/react/24/solid'
+import { Cog6ToothIcon, UserIcon, WifiIcon } from '@heroicons/react/24/solid'
 import { Modals } from 'components'
+import ConnectedPlayers from 'components/ConnectedPlayers'
 
 const Room: FC = () => {
 	const router = useRouter()
@@ -85,10 +86,17 @@ const Room: FC = () => {
 	return (
 		<>
 			{getPage()}
+
 			<Cog6ToothIcon
 				className='right-2 top-2 absolute h-6 w-6 cursor-pointer transition-transform hover:rotate-45'
 				onClick={() => setModalVisibility(true)}
 			/>
+			<div className='left-2 top-2 absolute group'>
+				<div className='pb-2'>
+					<UserIcon className='h-6 w-6 cursor-pointer' onClick={() => setModalVisibility(true)} />
+				</div>
+				<ConnectedPlayers className='absolute transition-all -translate-x-full opacity-0 group-hover:opacity-100 group-hover:translate-x-0' />
+			</div>
 			{modalVisibility ? <Modals.Settings close={() => setModalVisibility(false)} /> : null}
 		</>
 	)
