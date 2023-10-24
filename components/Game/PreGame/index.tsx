@@ -60,7 +60,7 @@ const transitions = [
 	{ id: Game.Resolution.TODO.toString(), label: 'Todo' },
 	{ id: Game.Resolution.REVIEWING.toString(), label: 'Review' },
 	{ id: Game.Resolution.ACCEPTED.toString(), label: 'Accept' },
-	{ id: Game.Resolution.REJECTED.toString(), label: 'Reject' },
+	{ id: Game.Resolution.REJECTED.toString(), label: 'Reject' }
 ]
 
 const PreGame: FC = () => {
@@ -79,6 +79,13 @@ const PreGame: FC = () => {
 		sections[round.resolution].push(round)
 		return sections
 	}, {})
+
+	const totalEffort = data.rounds.reduce((prev, curr) => {
+		if (!Number(curr.value)) {
+			return prev
+		}
+		return prev + Number(curr.value)
+	}, 0)
 
 	const selectedRound = data.rounds.find((round) => round.id === selectedRoundId)
 
@@ -100,7 +107,14 @@ const PreGame: FC = () => {
 				title={
 					<div className={clsx(borderBase, 'border-0 border-b', 'flex justify-between items-center py-2 px-4 font-semibold text-lg')}>
 						<span>{data.name}</span>
-						{self.role === 'owner' ? <PlusIcon onClick={() => setRoundModalVisibility(true)} className='h-6 w-6 cursor-pointer' /> : null}
+						<div className='flex items-center'>
+							{Number(totalEffort) && (
+								<span className='text-xs px-[5px] m-1 mr-2 rounded bg-theme-primary text-theme-secondary'>{totalEffort}</span>
+							)}
+							{self.role === 'owner' ? (
+								<PlusIcon onClick={() => setRoundModalVisibility(true)} className='h-6 w-6 cursor-pointer' />
+							) : null}
+						</div>
 					</div>
 				}
 			>
