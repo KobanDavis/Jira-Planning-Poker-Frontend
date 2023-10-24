@@ -17,7 +17,7 @@ const Animation: FC<{ delay: number; children: ReactNode }> = ({ delay, children
 			className='absolute transition-all duration-300'
 			style={{
 				opacity: y === 0 ? 1 : 0,
-				transform: `translateY(${-y}px)`,
+				transform: `translateY(${-y}px)`
 			}}
 		>
 			{children}
@@ -28,6 +28,8 @@ const Animation: FC<{ delay: number; children: ReactNode }> = ({ delay, children
 const PostGame: FC = ({}) => {
 	const { data, socket, self } = useGame()
 	const [estimate, setEstimate] = useState(null)
+
+	const isOwner = self.role === 'owner'
 
 	const saveEstimate = () => {
 		const round = Object.assign(
@@ -102,26 +104,52 @@ const PostGame: FC = ({}) => {
 				))}
 			</div>
 			<div className='flex items-center mt-6 space-x-2'>
-				<div className={clsx('flex flex-col space-y-2', self.role === 'owner' ? 'items-end' : 'items-center')}>
-					<Label type={estimate === mode ? 'primary' : undefined} onClick={() => setEstimate(mode)} className='cursor-pointer select-none'>
-						Common estimate: {mode}
-					</Label>
-					<Label type={estimate === median ? 'primary' : undefined} onClick={() => setEstimate(median)} className='cursor-pointer select-none'>
-						Middle of the deck: {median}
-					</Label>
-					<Label type={estimate === mean ? 'primary' : undefined} onClick={() => setEstimate(mean)} className='cursor-pointer select-none'>
-						Average estimate: {mean}
-					</Label>
-				</div>
-				{self.role === 'owner' ? (
-					<div className='flex flex-col space-y-2 items-start'>
-						<Input onChange={(e) => setEstimate(e.target.value)} value={estimate} placeholder='Estimate' className='w-full' htmlType='number' />
-						<div className='flex space-x-2 items-center'>
-							<Button type='primary' disabled={!estimate} onClick={saveEstimate}>
-								Save Estimate
-							</Button>
-							<Button onClick={revote}>Re-vote</Button>
+				{values.length > 0 ? (
+					<>
+						<div className={clsx('flex flex-col space-y-2', self.role === 'owner' ? 'items-end' : 'items-center')}>
+							<Label
+								type={estimate === mode ? 'primary' : undefined}
+								onClick={() => setEstimate(mode)}
+								className='cursor-pointer select-none'
+							>
+								Common estimate: {mode}
+							</Label>
+							<Label
+								type={estimate === median ? 'primary' : undefined}
+								onClick={() => setEstimate(median)}
+								className='cursor-pointer select-none'
+							>
+								Middle of the deck: {median}
+							</Label>
+							<Label
+								type={estimate === mean ? 'primary' : undefined}
+								onClick={() => setEstimate(mean)}
+								className='cursor-pointer select-none'
+							>
+								Average estimate: {mean}
+							</Label>
 						</div>
+						{isOwner ? (
+							<div className='flex flex-col space-y-2 items-start'>
+								<Input
+									onChange={(e) => setEstimate(e.target.value)}
+									value={estimate}
+									placeholder='Estimate'
+									className='w-full'
+									htmlType='number'
+								/>
+								<div className='flex space-x-2 items-center'>
+									<Button type='primary' disabled={!estimate || !Number(estimate)} onClick={saveEstimate}>
+										Save Estimate
+									</Button>
+									<Button onClick={revote}>Re-vote</Button>
+								</div>
+							</div>
+						) : null}
+					</>
+				) : isOwner ? (
+					<div className='flex flex-col space-y-2 items-start'>
+						<Button onClick={revote}>Re-vote</Button>
 					</div>
 				) : null}
 			</div>
