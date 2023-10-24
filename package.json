@@ -1,43 +1,43 @@
 {
-	"name": "jira-planning-poker",
-	"version": "1.0.0",
-	"description": "",
-	"scripts": {
-		"dev": "next",
-		"build": "next build",
-		"start": "next start"
-	},
-	"keywords": [],
-	"author": "",
-	"license": "MIT",
-	"prettier": {
-		"bracketSpacing": true,
-		"jsxSingleQuote": true,
-		"printWidth": 150,
-		"semi": false,
-		"singleQuote": true,
-		"tabWidth": 4,
-		"trailingComma": "none",
-		"useTabs": true
-	},
-	"dependencies": {
-		"@heroicons/react": "^2.0.18",
-		"@kobandavis/ui": "1.0.4",
-		"clsx": "^2.0.0",
-		"color": "^4.2.3",
-		"moment": "^2.29.4",
-		"next": "^13.4.10",
-		"next-auth": "^4.22.1",
-		"react": "^18.2.0",
-		"react-dom": "^18.2.0",
-		"socket.io-client": "^4.7.1"
-	},
-	"devDependencies": {
-		"@types/node": "^20.4.2",
-		"@types/react": "^18.2.15",
-		"autoprefixer": "^10.4.14",
-		"postcss": "^8.4.26",
-		"tailwindcss": "^3.3.3",
-		"typescript": "^5.1.6"
-	}
+  "name": "jira-planning-poker",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "dev": "next",
+    "build": "next build",
+    "start": "next start"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "prettier": {
+    "bracketSpacing": true,
+    "jsxSingleQuote": true,
+    "printWidth": 150,
+    "semi": false,
+    "singleQuote": true,
+    "tabWidth": 4,
+    "trailingComma": "none",
+    "useTabs": true
+  },
+  "dependencies": {
+    "@heroicons/react": "^2.0.18",
+    "@kobandavis/ui": "1.0.5",
+    "clsx": "^2.0.0",
+    "color": "^4.2.3",
+    "moment": "^2.29.4",
+    "next": "^13.4.10",
+    "next-auth": "^4.22.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "socket.io-client": "^4.7.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.4.2",
+    "@types/react": "^18.2.15",
+    "autoprefixer": "^10.4.14",
+    "postcss": "^8.4.26",
+    "tailwindcss": "^3.3.3",
+    "typescript": "^5.1.6"
+  }
 }
