@@ -1,7 +1,7 @@
 import { FC } from 'react'
 import clsx from 'clsx'
 import styles from './index.module.css'
-import { borderBase } from 'lib/styles'
+import { borderBase } from '@kobandavis/ui'
 
 interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
 	isFlipped?: boolean

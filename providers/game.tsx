@@ -62,23 +62,18 @@ const GameProvider: FC<{ children: React.ReactNode }> = (props) => {
 			setSelf(self)
 		})
 		socket.on('ingame/rounds', (rounds) => {
-			console.log('ingame/rounds', rounds)
 			updateData('rounds', rounds)
 		})
 		socket.on('ingame/state', (state) => {
-			console.log('ingame/state', state)
 			updateData('state', state)
 		})
 		socket.on('ingame/players', (players) => {
-			console.log('ingame/players', players)
 			updateData('players', players)
 		})
 		socket.on('ingame/cards', (cards) => {
-			console.log('ingame/cards', cards)
 			updateData('cards', cards)
 		})
 		socket.on('ingame/currentRound', (roundId) => {
-			console.log('ingame/currentRound', roundId)
 			updateData('currentRound', roundId)
 		})
 	}, [])
@@ -91,7 +86,7 @@ const GameProvider: FC<{ children: React.ReactNode }> = (props) => {
 			})
 		})
 	}
-	;((typeof window !== 'undefined' ? window : {}) as any).socket = socket
+
 	const gameInfo: GameInfo = {
 		data,
 		self,
@@ -100,7 +95,7 @@ const GameProvider: FC<{ children: React.ReactNode }> = (props) => {
 		updateData,
 	}
 
-	return self.id ? <GameContext.Provider value={gameInfo} {...props} /> : null
+	return <GameContext.Provider value={gameInfo} {...props} />
 }
 
 const GameContext = createContext<GameInfo>(null)
