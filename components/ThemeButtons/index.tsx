@@ -2,11 +2,18 @@ import clsx from 'clsx'
 import { FC } from 'react'
 import { Button, borderBase, useTheme } from '@kobandavis/ui'
 import { EyeDropperIcon } from '@heroicons/react/24/solid'
+import { ThemeType } from '@kobandavis/ui/dist/types'
 
 interface ThemeButtonsProps {}
 
 const ThemeButtons: FC<ThemeButtonsProps> = ({}) => {
 	const { theme, setThemeColor } = useTheme()
+
+	const handleThemeChange = (color: ThemeType, value: string) => {
+		window.localStorage.setItem(color, value)
+		setThemeColor(color, value)
+	}
+
 	return (
 		<div className='flex space-x-2'>
 			<Button type='primary' className='relative flex items-center'>
@@ -16,7 +23,7 @@ const ThemeButtons: FC<ThemeButtonsProps> = ({}) => {
 					className={clsx(borderBase, 'absolute w-full h-full cursor-pointer left-0 opacity-0')}
 					type='color'
 					value={theme.primary}
-					onChange={(e) => setThemeColor('primary', e.target.value)}
+					onChange={(e) => handleThemeChange('primary', e.target.value)}
 				/>
 			</Button>
 			<Button type='secondary' className='relative flex items-center'>
@@ -26,7 +33,7 @@ const ThemeButtons: FC<ThemeButtonsProps> = ({}) => {
 					className={clsx(borderBase, 'absolute w-full h-full cursor-pointer left-0 opacity-0')}
 					type='color'
 					value={theme.secondary}
-					onChange={(e) => setThemeColor('secondary', e.target.value)}
+					onChange={(e) => handleThemeChange('secondary', e.target.value)}
 				/>
 			</Button>
 		</div>

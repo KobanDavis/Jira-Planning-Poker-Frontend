@@ -6,13 +6,18 @@ import { useRouter } from 'next/router'
 import { useGame } from 'providers/game'
 import { useJira } from 'providers/jira'
 import { LoadingScreen } from '@kobandavis/ui'
+import { Cog6ToothIcon } from '@heroicons/react/24/solid'
+import { Modals } from 'components'
 
 const Room: FC = () => {
 	const router = useRouter()
-	const roomId = router.query.roomId as string
 	const { self, data, socket, updateData } = useGame()
 	const jira = useJira()
+
+	const [modalVisibility, setModalVisibility] = useState<boolean>(false)
 	const [roomExists, setRoomExists] = useState<boolean>(null)
+
+	const roomId = router.query.roomId as string
 
 	useEffect(() => {
 		if (!data.name && roomId) {
@@ -50,30 +55,43 @@ const Room: FC = () => {
 
 	console.log(self.id)
 
-	switch (data.state) {
-		case Game.State.NOT_JOINED: {
-			const name = window.localStorage.getItem('name')
-			if (name) {
-				join(name)
-				return <LoadingScreen message='Joining game' />
+	const getPage = () => {
+		switch (data.state) {
+			case Game.State.NOT_JOINED: {
+				const name = window.localStorage.getItem('name')
+				if (name) {
+					join(name)
+					return <LoadingScreen message='Joining game' />
+				}
+				return <NotJoined join={join} />
 			}
-			return <NotJoined join={join} />
+			case Game.State.LOBBY: {
+				return <Lobby />
+			}
+			case Game.State.PREGAME: {
+				return <PreGame />
+			}
+			case Game.State.INGAME: {
+				return self.role === 'owner' ? <InGame.Owner /> : <InGame.Player />
+			}
+			case Game.State.POSTGAME: {
+				return <PostGame />
+			}
+			default:
+				return <div>Game machine broke :(</div>
 		}
-		case Game.State.LOBBY: {
-			return <Lobby />
-		}
-		case Game.State.PREGAME: {
-			return <PreGame />
-		}
-		case Game.State.INGAME: {
-			return self.role === 'owner' ? <InGame.Owner /> : <InGame.Player />
-		}
-		case Game.State.POSTGAME: {
-			return <PostGame />
-		}
-		default:
-			return <div>Game machine broke :(</div>
 	}
+
+	return (
+		<>
+			{getPage()}
+			<Cog6ToothIcon
+				className='right-2 top-2 absolute h-6 w-6 cursor-pointer transition-transform hover:rotate-45'
+				onClick={() => setModalVisibility(true)}
+			/>
+			{modalVisibility ? <Modals.Settings close={() => setModalVisibility(false)} /> : null}
+		</>
+	)
 }
 
 export default Room
