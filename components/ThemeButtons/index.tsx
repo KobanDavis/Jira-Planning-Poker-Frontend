@@ -1,8 +1,7 @@
 import clsx from 'clsx'
 import { FC } from 'react'
-import { Button, borderBase, useTheme } from '@kobandavis/ui'
+import { Button, ThemeType, borderBase, useTheme } from '@kobandavis/ui'
 import { EyeDropperIcon } from '@heroicons/react/24/solid'
-import { ThemeType } from '@kobandavis/ui/dist/types'
 
 interface ThemeButtonsProps {}
 

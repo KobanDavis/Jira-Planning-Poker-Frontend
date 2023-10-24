@@ -1,6 +1,6 @@
 import clsx from 'clsx'
 import { FC, useEffect, useState } from 'react'
-import { Button, Card, Dropdown, Label, Modal, backgroundSecondaryHover, borderHover } from '@kobandavis/ui'
+import { Button, Card, Dropdown, Label, Modal, Textarea, backgroundSecondaryHover, borderHover } from '@kobandavis/ui'
 import { JiraAPI } from 'lib/jira'
 import { useGame } from 'providers/game'
 import { useJira } from 'providers/jira'
@@ -18,6 +18,7 @@ const NewIssue: FC<NewIssueProps> = ({ close }) => {
 	const [projectId, setProjectId] = useState<string>(null)
 	const [issueTypeId, setIssueTypeId] = useState<string>(null)
 	const [summary, setSummary] = useState<string>(null)
+	const [description, setDescription] = useState<string>(null)
 
 	useEffect(() => {
 		jira.getCreateMeta().then(setMeta)
@@ -26,7 +27,7 @@ const NewIssue: FC<NewIssueProps> = ({ close }) => {
 	const selectedProject = meta?.find((project) => project.id === projectId)
 
 	const createIssue = async () => {
-		const res = await jira.createNewIssue(issueTypeId, selectedProject.id, summary)
+		const res = await jira.createNewIssue(issueTypeId, selectedProject.id, summary, description)
 		console.log(res)
 		socket.emit('ingame/round', { id: res.key, resolution: Game.Resolution.TODO, title: summary, value: null })
 		close()
@@ -61,13 +62,18 @@ const NewIssue: FC<NewIssueProps> = ({ close }) => {
 							/>
 						</div>
 						<div className='flex flex-col space-y-2'>
-							<div className='flex space-x-2'>
-								<Label type='secondary'>Summary</Label>
-							</div>
+							<Label type='secondary'>Summary</Label>
 							<div className={clsx('flex items-center px-2 py-1 space-x-2 rounded-sm', borderHover, backgroundSecondaryHover)}>
 								{selectedProject ? <Label type='primary'>{selectedProject.key}-???</Label> : null}
-								<input className='bg-white/0 outline-none w-full text-sm font-semibold' onChange={(e) => setSummary(e.target.value)} />
+								<input
+									className='bg-white/0 outline-none w-full text-sm font-semibold'
+									onChange={(e) => setSummary(e.target.value)}
+								/>
 							</div>
+						</div>
+						<div className='flex flex-col space-y-2'>
+							<Label type='secondary'>Description</Label>
+							<Textarea onChange={(e) => setDescription(e.target.value)} />
 						</div>
 						<Button className='w-full' disabled={!projectId || !issueTypeId || !summary} onClick={createIssue} type='primary'>
 							Create issue in Jira

@@ -342,12 +342,13 @@ export default class Jira {
 		return res.projects
 	}
 
-	public async createNewIssue(issueTypeId: string, projectId: string, summary: string): Promise<any> {
+	public async createNewIssue(issueTypeId: string, projectId: string, summary: string, description?: string): Promise<any> {
 		const body: RecursivePartial<JiraAPI.Issue> = {
 			fields: {
 				issuetype: { id: issueTypeId },
 				project: { id: projectId },
-				summary
+				summary,
+				description
 			}
 		}
 		this._headers.append('Content-Type', 'application/json')
