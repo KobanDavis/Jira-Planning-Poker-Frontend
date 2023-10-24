@@ -114,10 +114,9 @@ const Owner: FC<InGameProps> = ({}) => {
 				</span>
 			</div>
 			<div className={clsx('flex flex-col items-center transition-opacity space-y-2', flyout ? 'opacity-0' : 'opacity-100')}>
-				<div className='flex flex-col transition-opacity mt-2 mb-4'>
+				<div className='flex flex-col transition-opacity mt-8 mb-4'>
 					{hasSubmittedCard === false ? <VoteButtons submit={submit} /> : null}
 				</div>
-
 				<div className='flex space-x-2'>
 					<Button disabled={isReady} onClick={cancelVote}>
 						Cancel Round
