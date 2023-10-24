@@ -1,9 +1,9 @@
-import clsx from 'clsx'
 import { FC, useEffect, useState } from 'react'
-import { Button, Input, Label } from '@kobandavis/ui'
-import { Modals, PokerCard } from 'components'
+import clsx from 'clsx'
+
+import { Button, Label } from '@kobandavis/ui'
+import { Modals, PokerCard, VoteButtons } from 'components'
 import { useGame } from 'providers/game'
-import { EyeIcon, EyeSlashIcon, PaperAirplaneIcon } from '@heroicons/react/24/solid'
 import { Game } from 'types/backend'
 
 interface InGameProps {}
@@ -27,7 +27,7 @@ const FlyInCard: FC<{ isStraight: boolean }> = ({ isStraight }) => {
 		<div
 			className='absolute transition-all duration-500'
 			style={{
-				transform: `translateX(${x}px) rotate(${deg}deg)`,
+				transform: `translateX(${x}px) rotate(${deg}deg)`
 			}}
 		>
 			<PokerCard />
@@ -40,8 +40,6 @@ const Owner: FC<InGameProps> = ({}) => {
 	const [isReady, setIsReady] = useState<boolean>(false)
 	const [flyout, setFlyout] = useState<boolean>(false)
 	const [modalVisibility, setModalVisibility] = useState<boolean>(false)
-	const [value, setValue] = useState<string>('')
-	const [voteIsVisible, setVoteIsVisible] = useState<boolean>(false)
 
 	const cancelVote = () => {
 		socket.emit('ingame/state', Game.State.PREGAME)
@@ -58,11 +56,11 @@ const Owner: FC<InGameProps> = ({}) => {
 		}, 500)
 	}
 
-	const submit = () => {
+	const submit = (value) => {
 		const card: Game.Card = {
 			id: self.id,
 			name: self.name,
-			value,
+			value
 		}
 		socket.emit('ingame/card', card)
 	}
@@ -95,43 +93,28 @@ const Owner: FC<InGameProps> = ({}) => {
 			</div>
 			<span className={clsx('my-4 transition-opacity', isReady ? 'opacity-0' : 'opacity-100')}>
 				<span
-					className={clsx('transition-colors font-bold', data.cards.length === data.players.length ? 'text-theme-primary' : 'text-theme-primary/15')}
+					className={clsx(
+						'transition-colors font-bold',
+						data.cards.length === data.players.length ? 'text-theme-primary' : 'text-theme-primary/15'
+					)}
 				>
 					{data.cards.length} / {data.players.length} cards
 				</span>
 			</span>
 			<div className={clsx('flex flex-col items-center transition-opacity space-y-2', flyout ? 'opacity-0' : 'opacity-100')}>
-				<div className='flex flex-col transition-opacity mt-2'>
-					{hasSubmittedCard === false ? (
-						<>
-							<div className='flex items-center space-x-2 cursor-pointer' onClick={() => setVoteIsVisible(!voteIsVisible)}>
-								<Label>Estimate</Label>
-								{voteIsVisible ? <EyeIcon className='h-4 w-4' /> : <EyeSlashIcon className='h-4 w-4' />}
-							</div>
-							<div className='flex mt-2'>
-								<Input
-									className='rounded-r-none'
-									htmlType={voteIsVisible ? 'text' : 'password'}
-									onChange={(e) => setValue((e.target as any).value)}
-								/>
-								<Button
-									type='primary'
-									disabled={Number(value) < 0 || value.length === 0}
-									className=' rounded-l-none border-l-0'
-									onClick={submit}
-								>
-									<PaperAirplaneIcon className='w-4 h-4' />
-								</Button>
-							</div>
-						</>
-					) : null}
+				<div className='flex flex-col transition-opacity mt-2 mb-4'>
+					{hasSubmittedCard === false ? <VoteButtons submit={submit} /> : null}
 				</div>
 
 				<div className='flex space-x-2'>
 					<Button disabled={isReady} onClick={cancelVote}>
-						Cancel
+						Cancel Round
 					</Button>
-					<Button type={data.cards.length === data.players.length ? 'primary' : undefined} onClick={finishVote} disabled={data.cards.length === 0}>
+					<Button
+						type={data.cards.length === data.players.length ? 'primary' : undefined}
+						onClick={finishVote}
+						disabled={data.cards.length === 0}
+					>
 						Flip
 					</Button>
 				</div>

@@ -1,9 +1,10 @@
+import { FC, useEffect, useState } from 'react'
+
 import { Game } from 'types/backend'
 import { NotJoined, Lobby, PreGame, PostGame, InGame } from 'components/Game'
 import { useRouter } from 'next/router'
 import { useGame } from 'providers/game'
 import { useJira } from 'providers/jira'
-import { FC, useEffect, useState } from 'react'
 import { LoadingScreen } from '@kobandavis/ui'
 
 const Room: FC = () => {
@@ -28,7 +29,7 @@ const Room: FC = () => {
 				id: issue.key,
 				title: issue.fields.summary,
 				resolution: Game.Resolution.TODO,
-				value: issue.fields.customfield_10020?.toString(),
+				value: issue.fields.customfield_10020?.toString()
 			}))
 			socket.emit('ingame/rounds', rounds)
 		})
