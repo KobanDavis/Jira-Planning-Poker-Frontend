@@ -20,11 +20,11 @@ export const authOptions: NextAuthOptions = {
 						'read:jql:jira',
 						'read:issue-details:jira',
 						'read:issue:jira-software',
-						'write:issue:jira-software',
-					].join(' '),
-				},
-			},
-		}),
+						'write:issue:jira-software'
+					].join(' ')
+				}
+			}
+		})
 	],
 	callbacks: {
 		async jwt({ token, account, user }) {
@@ -53,12 +53,13 @@ export const authOptions: NextAuthOptions = {
 			session.cloudId = token.cloudId
 			session.resourceUrl = token.resourceUrl
 			session.error = token.error
+			session.expires = token.expires_at
 
 			return session
-		},
+		}
 	},
 	pages: { signIn: '/login' },
-	secret: process.env.NEXTAUTH_SECRET,
+	secret: process.env.NEXTAUTH_SECRET
 }
 
 export default NextAuth(authOptions)

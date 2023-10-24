@@ -4,13 +4,13 @@ import JiraClient from 'lib/jira'
 
 const JiraProvider: FC<{ children: React.ReactNode }> = (props) => {
 	const [jira, setJira] = useState<JiraClient>(null)
-	const { data: session } = useSession()
+	const { data: session, update } = useSession()
 
 	useEffect(() => {
 		if (session) {
-			setJira(new JiraClient(session))
+			setJira(new JiraClient(session, update))
 		}
-	}, [session])
+	}, [Boolean(session)])
 
 	if (session && !jira) return null
 

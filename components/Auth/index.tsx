@@ -1,6 +1,6 @@
 import { FC } from 'react'
 
-import { getProviders, signIn, useSession } from 'next-auth/react'
+import { getProviders, signIn, signOut, useSession } from 'next-auth/react'
 import Router from 'next/router'
 import { LoadingScreen } from '@kobandavis/ui'
 
@@ -25,8 +25,8 @@ const Auth: FC<AuthProps> = ({ children }) => {
 	}
 
 	if (session?.error) {
-		getProviders().then((providers) => signIn(providers.atlassian.id))
-		return <LoadingScreen message='Logging in' />
+		signOut()
+		return <LoadingScreen message='Your session has expired, redirecting back to sign in' />
 	}
 
 	return children
