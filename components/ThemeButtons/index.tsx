@@ -9,7 +9,7 @@ const ThemeButtons: FC<ThemeButtonsProps> = ({}) => {
 	const { theme, setThemeColor } = useTheme()
 
 	const handleThemeChange = (color: ThemeType, value: string) => {
-		window.localStorage.setItem(color, value)
+		localStorage.setItem(color, value)
 		setThemeColor(color, value)
 	}
 

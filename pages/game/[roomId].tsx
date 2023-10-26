@@ -58,7 +58,7 @@ const Room: FC = () => {
 	const getPage = () => {
 		switch (data.state) {
 			case Game.State.NOT_JOINED: {
-				const name = window.localStorage.getItem('name')
+				const name = localStorage.getItem('name')
 				if (name) {
 					join(name)
 					return <LoadingScreen message='Joining game' />
