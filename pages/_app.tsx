@@ -24,10 +24,10 @@ const App = ({ Component, pageProps: { session, ...pageProps } }: AppProps) => {
 	const [modalVisibility, setModalVisibility] = useState<boolean>(false)
 
 	useEffect(() => {
-		document.documentElement.style.setProperty('font-size', window.localStorage.getItem('baseFontSize') + 'px')
+		document.documentElement.style.setProperty('font-size', localStorage.getItem('baseFontSize') + 'px')
 		document.body.classList.add(satoshi.className)
-		setThemeColor('primary', window.localStorage.getItem('primary') ?? defaultTheme.primary)
-		setThemeColor('secondary', window.localStorage.getItem('secondary') ?? defaultTheme.secondary)
+		setThemeColor('primary', localStorage.getItem('primary') ?? defaultTheme.primary)
+		setThemeColor('secondary', localStorage.getItem('secondary') ?? defaultTheme.secondary)
 	}, [])
 
 	return (
