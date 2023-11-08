@@ -3,7 +3,7 @@ import { FC, useEffect, useState } from 'react'
 import { Button, Card, Dropdown, Label, Modal, Textarea, backgroundSecondaryHover, borderHover } from '@kobandavis/ui'
 import { JiraAPI } from 'lib/jira'
 import { useGame } from 'providers/game'
-import { useJira } from 'providers/jira'
+import { useJira } from 'providers/jiraAuth'
 import { Game } from 'types/backend'
 
 interface NewIssueProps {
@@ -11,7 +11,7 @@ interface NewIssueProps {
 }
 
 const NewIssue: FC<NewIssueProps> = ({ close }) => {
-	const jira = useJira()
+	const { jira } = useJira()
 	const { socket } = useGame()
 
 	const [meta, setMeta] = useState<JiraAPI.CreateMeta[]>(null)
@@ -28,7 +28,6 @@ const NewIssue: FC<NewIssueProps> = ({ close }) => {
 
 	const createIssue = async () => {
 		const res = await jira.createNewIssue(issueTypeId, selectedProject.id, summary, description)
-		console.log(res)
 		socket.emit('ingame/round', { id: res.key, resolution: Game.Resolution.TODO, title: summary, value: null })
 		close()
 	}

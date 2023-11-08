@@ -102,61 +102,64 @@ const PreGame: FC = () => {
 	const openPreview = () => setIssueModalVisibility(true)
 	const isNewIssue = selectedRoundId?.endsWith('???')
 	return (
-		<div className='flex flex-col space-y-2 items-center justify-center h-screen'>
-			<Card
-				title={
-					<div className={clsx(borderBase, 'border-0 border-b', 'flex justify-between items-center py-2 px-4 font-semibold text-lg')}>
-						<span>{data.name}</span>
-						<div className='flex items-center'>
-							{Number(totalEffort) && (
-								<span className='text-xs px-[5px] m-1 mr-2 rounded bg-theme-primary text-theme-secondary'>{totalEffort}</span>
-							)}
-							{self.role === 'owner' ? (
-								<PlusIcon onClick={() => setRoundModalVisibility(true)} className='h-6 w-6 cursor-pointer' />
-							) : null}
+		<>
+			<div className='flex flex-col space-y-2 items-center justify-center h-screen'>
+				<Card
+					title={
+						<div className={clsx(borderBase, 'border-0 border-b', 'flex justify-between items-center py-2 px-4 font-semibold text-lg')}>
+							<span>{data.name}</span>
+							<div className='flex items-center'>
+								{totalEffort > 0 ? (
+									<span className='text-xs px-[5px] font-normal m-1 rounded bg-theme-primary text-theme-secondary'>
+										{totalEffort}
+									</span>
+								) : null}
+								{self.role === 'owner' ? (
+									<PlusIcon onClick={() => setRoundModalVisibility(true)} className='h-6 w-6 ml-1 cursor-pointer' />
+								) : null}
+							</div>
 						</div>
+					}
+				>
+					<div className='space-y-2'>
+						{Object.entries(sections).map(([resolution, rounds]) => (
+							<Section
+								openPreview={openPreview}
+								setSelectedRoundId={setSelectedRoundId}
+								selectedRoundId={selectedRoundId}
+								rounds={rounds}
+								title={Game.Resolution[resolution]}
+								key={resolution}
+							/>
+						))}
 					</div>
-				}
-			>
-				<div className='space-y-2'>
-					{Object.entries(sections).map(([resolution, rounds]) => (
-						<Section
-							openPreview={openPreview}
-							setSelectedRoundId={setSelectedRoundId}
-							selectedRoundId={selectedRoundId}
-							rounds={rounds}
-							title={Game.Resolution[resolution]}
-							key={resolution}
-						/>
-					))}
-				</div>
-			</Card>
-			<div className='space-x-2 flex'>
-				<Button disabled={selectedRoundId === null || isNewIssue} onClick={openPreview}>
-					Preview
-				</Button>
-				<Dropdown disabled={selectedRoundId === null} placeholder='Transition' items={transitions} onChange={handleTransition} />
+				</Card>
+				<div className='space-x-2 flex'>
+					<Button disabled={selectedRoundId === null || isNewIssue} onClick={openPreview}>
+						Preview
+					</Button>
+					<Dropdown disabled={selectedRoundId === null} placeholder='Transition' items={transitions} onChange={handleTransition} />
 
+					{self.role === 'owner' ? (
+						<Button
+							type='primary'
+							disabled={selectedRoundId === null || selectedRound.resolution !== Game.Resolution.ACCEPTED}
+							onClick={() => vote(selectedRoundId)}
+						>
+							Vote
+						</Button>
+					) : null}
+				</div>
 				{self.role === 'owner' ? (
-					<Button
-						type='primary'
-						disabled={selectedRoundId === null || selectedRound.resolution !== Game.Resolution.ACCEPTED}
-						onClick={() => vote(selectedRoundId)}
-					>
-						Vote
+					<Button onClick={() => setFinishModalVisibility(true)} type='primary' className='fixed bottom-4 right-4'>
+						Finish Planning
 					</Button>
 				) : null}
 			</div>
 			{issueModalVisibility ? <Modals.Issue close={() => setIssueModalVisibility(false)} issueId={selectedRoundId} /> : null}
 			{roundModalVisibility ? <Modals.NewIssue close={() => setRoundModalVisibility(false)} /> : null}
-
-			{self.role === 'owner' ? (
-				<Button onClick={() => setFinishModalVisibility(true)} type='primary' className='fixed bottom-4 right-4'>
-					Finish Planning
-				</Button>
-			) : null}
 			{finishModalVisibility ? <Modals.FinishPlanning close={() => setFinishModalVisibility(false)} /> : null}
-		</div>
+		</>
 	)
 }
 

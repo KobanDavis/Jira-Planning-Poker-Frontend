@@ -1,20 +1,20 @@
 import { FC, useEffect, useState } from 'react'
 import { Button, Card, Dropdown, Loading } from '@kobandavis/ui'
-import { Issue, Modals, ThemeButtons } from 'components'
+import { Issue, Modals } from 'components'
 import { JiraAPI } from 'lib/jira'
-import { useJira } from 'providers/jira'
-import { useQS } from 'hooks'
 import { useGame } from 'providers/game'
 import { useRouter } from 'next/router'
+import { getQS, setQS } from 'lib/qs'
+import { useJira } from 'providers/jiraAuth'
 
 type Keys = 'board' | 'sprint'
 
 const App: FC = () => {
-	const jira = useJira()
+	const { jira } = useJira()
 	const { socket, self } = useGame()
 	const router = useRouter()
 
-	const { board, sprint, setQS } = useQS<Keys>()
+	const { board, sprint } = getQS<Keys>()
 	const [boards, setBoards] = useState<JiraAPI.Board[]>(null)
 	const [selectedBoardId, setSelectedBoardId] = useState<string>(board)
 

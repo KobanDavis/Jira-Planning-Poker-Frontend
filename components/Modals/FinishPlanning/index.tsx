@@ -1,7 +1,7 @@
 import { FC, useState } from 'react'
 import { Button, Loading, Card, Modal } from '@kobandavis/ui'
 import { useGame } from 'providers/game'
-import { useJira } from 'providers/jira'
+import { useJira } from 'providers/jiraAuth'
 
 interface FinishPlanningProps {
 	close(): void
@@ -9,7 +9,7 @@ interface FinishPlanningProps {
 
 const FinishPlanning: FC<FinishPlanningProps> = ({ close }) => {
 	const { data } = useGame()
-	const jira = useJira()
+	const { jira } = useJira()
 	const [loading, setLoading] = useState<boolean>(false)
 
 	const estimates = data.rounds.filter((round) => !Number.isNaN(Number(round.value)))
