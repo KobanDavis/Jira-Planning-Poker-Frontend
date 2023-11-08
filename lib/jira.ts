@@ -21,7 +21,6 @@ class Jira {
 
 	private async _checkToken(): Promise<void> {
 		if (hasExpired(this._auth)) {
-			console.log('token expired')
 			Object.assign(this._auth, await refreshAccessToken(this._auth.refreshToken))
 			this._updateTokenInHeader(this._auth.token)
 		}
