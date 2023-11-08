@@ -60,7 +60,6 @@ const PostGame: FC = ({}) => {
 			}
 			return map
 		}, {} as Record<number, number>)
-		console.log(values, map)
 
 		return Object.entries(map)
 			.sort(([, a], [, b]) => b - a)[0][0]

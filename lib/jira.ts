@@ -1,25 +1,35 @@
-import { JiraAuth } from 'providers/jiraAuth'
+import { JiraAuth, hasExpired, refreshAccessToken } from 'providers/jiraAuth'
 
 type RecursivePartial<T> = {
 	[P in keyof T]?: RecursivePartial<T[P]>
 }
 
 class Jira {
-	private _headers = new Headers()
 	private _baseUrl: string
 
+	private _headers = new Headers()
 	constructor(private _auth: JiraAuth) {
 		this._baseUrl = `https://api.atlassian.com/ex/jira/${this._auth.cloudId}/rest`
-		this._headers.append('Authorization', `Bearer ${this._auth.token}`)
+
 		this._headers.append('Accept', 'application/json')
+		this._updateTokenInHeader(this._auth.token)
+	}
+
+	private _updateTokenInHeader(token: string) {
+		this._headers.set('Authorization', `Bearer ${token}`)
+	}
+
+	private async _checkToken(): Promise<void> {
+		if (hasExpired(this._auth)) {
+			console.log('token expired')
+			Object.assign(this._auth, await refreshAccessToken(this._auth.refreshToken))
+			this._updateTokenInHeader(this._auth.token)
+		}
 	}
 
 	private async _request<T = any>(url: string, method?: string, body?: string, noJsonPlz: boolean = false): Promise<T> {
+		await this._checkToken()
 		return fetch(this._baseUrl + url, { method, headers: this._headers, body }).then((r) => (noJsonPlz ? r : r.json()))
-	}
-
-	public async withAuth(url: string, method?: string, body?: string) {
-		return fetch(this._baseUrl + url, { method, headers: this._headers, body })
 	}
 
 	public async getAttachment(attachment: any): Promise<string> {

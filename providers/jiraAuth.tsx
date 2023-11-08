@@ -22,7 +22,7 @@ interface JiraContext {
 	auth: JiraAuth
 }
 
-const refreshAccessToken = async (refreshToken: string): Promise<JiraAPI.OAuthResponse> => {
+export const refreshAccessToken = async (refreshToken: string): Promise<JiraAPI.OAuthResponse> => {
 	const res = await fetch('/api/auth/refresh', {
 		method: 'POST',
 		headers: { 'Content-Type': 'application/json' },
@@ -40,8 +40,8 @@ const exchangeCode = async (code: string): Promise<JiraAuth> => {
 	return res.json()
 }
 
-const hasExpired = (auth: JiraAuth) => {
-	return Date.now() > auth?.expiry ?? 0
+export const hasExpired = (auth: JiraAuth) => {
+	return Date.now() > (auth?.expiry ?? 0)
 }
 
 const allowedRoutes = ['/login', '/callback']

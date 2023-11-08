@@ -20,7 +20,6 @@ const Issue: FC<IssueProps> = ({ issueId, close }) => {
 	const [issue, setIssue] = useState<JiraAPI.Issue>(null)
 
 	useEffect(() => {
-		console.log(issue)
 		setIssue(null)
 		if (issueId) {
 			jira.getIssue(issueId).then(setIssue)

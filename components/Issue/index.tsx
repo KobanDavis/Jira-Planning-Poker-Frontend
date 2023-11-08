@@ -1,4 +1,4 @@
-import { JiraAPI } from 'lib/jiraAPI'
+import { JiraAPI } from 'lib/jira'
 import { FC } from 'react'
 
 interface IssueProps extends React.HTMLAttributes<HTMLDivElement> {

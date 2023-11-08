@@ -28,7 +28,6 @@ const NewIssue: FC<NewIssueProps> = ({ close }) => {
 
 	const createIssue = async () => {
 		const res = await jira.createNewIssue(issueTypeId, selectedProject.id, summary, description)
-		console.log(res)
 		socket.emit('ingame/round', { id: res.key, resolution: Game.Resolution.TODO, title: summary, value: null })
 		close()
 	}

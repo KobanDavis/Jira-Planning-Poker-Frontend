@@ -53,8 +53,6 @@ const Room: FC = () => {
 		}
 	}
 
-	console.log(self.id)
-
 	const getPage = () => {
 		switch (data.state) {
 			case Game.State.NOT_JOINED: {
