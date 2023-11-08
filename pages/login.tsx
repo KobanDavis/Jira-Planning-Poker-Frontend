@@ -14,22 +14,22 @@ const scopes = [
 	'write:issue:jira-software'
 ].join(' ')
 
+const getAuthCode = () => {
+	const redirectURI = window.location.origin + '/callback'
+	const url =
+		`https://auth.atlassian.com/authorize` +
+		`?audience=api.atlassian.com` +
+		`&client_id=${process.env.NEXT_PUBLIC_JIRA_CLIENT_ID}` +
+		`&scope=${encodeURIComponent(scopes)}` +
+		`&redirect_uri=${redirectURI}` +
+		`&state=0` +
+		`&response_type=code` +
+		`&prompt=consent`
+
+	window.location.assign(url)
+}
+
 const Login: FC = () => {
-	const getAuthCode = () => {
-		const redirectURI = window.location.origin + '/callback'
-		const url =
-			`https://auth.atlassian.com/authorize` +
-			`?audience=api.atlassian.com` +
-			`&client_id=${process.env.NEXT_PUBLIC_JIRA_CLIENT_ID}` +
-			`&scope=${encodeURIComponent(scopes)}` +
-			`&redirect_uri=${redirectURI}` +
-			`&state=0` +
-			`&response_type=code` +
-			`&prompt=consent`
-
-		window.location.assign(url)
-	}
-
 	return (
 		<div className='flex flex-col items-center justify-center min-h-screen bg-theme-secondary text-theme-primary'>
 			<svg className='fill-current w-12 h-12' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' fill='none'>
