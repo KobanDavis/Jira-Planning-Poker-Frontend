@@ -1,14 +1,14 @@
 import { Auth, Modals } from 'components'
-import { useEffect, useState } from 'react'
-import { SessionProvider } from 'next-auth/react'
+import { useEffect, useLayoutEffect, useState } from 'react'
 import { AppProps } from 'next/app'
 import { GameProvider } from 'providers/game'
-import { JiraProvider } from 'providers/jira'
 import { ThemeProvider, useTheme } from '@kobandavis/ui'
 import { Cog6ToothIcon } from '@heroicons/react/24/solid'
 import localFont from 'next/font/local'
 
 import 'styles/globals.css'
+import { JiraProvider } from 'providers/jiraAuth'
+import dynamic from 'next/dynamic'
 
 const satoshi = localFont({
 	src: [
@@ -23,7 +23,7 @@ const App = ({ Component, pageProps: { session, ...pageProps } }: AppProps) => {
 	const { setThemeColor } = useTheme()
 	const [modalVisibility, setModalVisibility] = useState<boolean>(false)
 
-	useEffect(() => {
+	useLayoutEffect(() => {
 		document.documentElement.style.setProperty('font-size', localStorage.getItem('baseFontSize') + 'px')
 		document.body.classList.add(satoshi.className)
 		setThemeColor('primary', localStorage.getItem('primary') ?? defaultTheme.primary)
@@ -31,22 +31,18 @@ const App = ({ Component, pageProps: { session, ...pageProps } }: AppProps) => {
 	}, [])
 
 	return (
-		<SessionProvider>
-			<JiraProvider>
-				<GameProvider>
-					<Auth>
-						<>
-							<Component {...pageProps} />
-							<Cog6ToothIcon
-								className='right-2 top-2 absolute h-6 w-6 cursor-pointer transition-transform hover:rotate-45'
-								onClick={() => setModalVisibility(true)}
-							/>
-							{modalVisibility ? <Modals.Settings close={() => setModalVisibility(false)} /> : null}
-						</>
-					</Auth>
-				</GameProvider>
-			</JiraProvider>
-		</SessionProvider>
+		<JiraProvider>
+			<GameProvider>
+				<>
+					<Component {...pageProps} />
+					<Cog6ToothIcon
+						className='right-2 top-2 absolute h-6 w-6 cursor-pointer transition-transform hover:rotate-45'
+						onClick={() => setModalVisibility(true)}
+					/>
+					{modalVisibility ? <Modals.Settings close={() => setModalVisibility(false)} /> : null}
+				</>
+			</GameProvider>
+		</JiraProvider>
 	)
 }
 
@@ -58,4 +54,6 @@ const AppWithTheme = (props: AppProps) => {
 	)
 }
 
-export default AppWithTheme
+// ssr is for losers
+// export default AppWithTheme
+export default dynamic(Promise.resolve(AppWithTheme), { ssr: false })

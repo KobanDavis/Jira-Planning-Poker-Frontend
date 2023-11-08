@@ -4,9 +4,8 @@ import formatLinks from 'lib/formatLinks'
 import Head from 'next/head'
 import { Card, Modal } from '@kobandavis/ui'
 import { Comment } from 'components'
-import { useSession } from 'next-auth/react'
 import { JiraAPI } from 'lib/jira'
-import { useJira } from 'providers/jira'
+import { useJira } from 'providers/jiraAuth'
 import { ArrowTopRightOnSquareIcon, XMarkIcon } from '@heroicons/react/24/outline'
 
 import styles from 'styles/jira.module.css'
@@ -17,9 +16,8 @@ interface IssueProps {
 }
 
 const Issue: FC<IssueProps> = ({ issueId, close }) => {
-	const jira = useJira()
+	const { jira, auth } = useJira()
 	const [issue, setIssue] = useState<JiraAPI.Issue>(null)
-	const session = useSession()
 
 	useEffect(() => {
 		console.log(issue)
@@ -76,7 +74,9 @@ const Issue: FC<IssueProps> = ({ issueId, close }) => {
 										<span className='font-bold mb-1'>Description</span>
 										<div
 											className={clsx(styles.issue, 'resize text-sm bg-theme-secondary rounded p-2 min-h-[15rem]')}
-											dangerouslySetInnerHTML={{ __html: formatLinks(issue.renderedFields.description, session.data.resourceUrl) }}
+											dangerouslySetInnerHTML={{
+												__html: formatLinks(issue.renderedFields.description, auth.resourceURL)
+											}}
 										/>
 									</div>
 								) : null}
@@ -85,7 +85,9 @@ const Issue: FC<IssueProps> = ({ issueId, close }) => {
 										<span className='font-bold mb-1'>Acceptance Criteria</span>
 										<div
 											className={clsx(styles.issue, 'text-sm bg-theme-secondary rounded p-2 min-h-[15rem]')}
-											dangerouslySetInnerHTML={{ __html: formatLinks(issue.renderedFields.customfield_10057, session.data.resourceUrl) }}
+											dangerouslySetInnerHTML={{
+												__html: formatLinks(issue.renderedFields.customfield_10057, auth.resourceURL)
+											}}
 										/>
 									</div>
 								) : null}

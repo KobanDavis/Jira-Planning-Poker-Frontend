@@ -1,11 +1,118 @@
-import { Session } from 'next-auth'
-import { SessionContextValue } from 'next-auth/react'
+import { JiraAuth } from 'providers/jiraAuth'
 
 type RecursivePartial<T> = {
 	[P in keyof T]?: RecursivePartial<T[P]>
 }
 
+class Jira {
+	private _headers = new Headers()
+	private _baseUrl: string
+
+	constructor(private _auth: JiraAuth) {
+		this._baseUrl = `https://api.atlassian.com/ex/jira/${this._auth.cloudId}/rest`
+		this._headers.append('Authorization', `Bearer ${this._auth.token}`)
+		this._headers.append('Accept', 'application/json')
+	}
+
+	private async _request<T = any>(url: string, method?: string, body?: string, noJsonPlz: boolean = false): Promise<T> {
+		return fetch(this._baseUrl + url, { method, headers: this._headers, body }).then((r) => (noJsonPlz ? r : r.json()))
+	}
+
+	public async withAuth(url: string, method?: string, body?: string) {
+		return fetch(this._baseUrl + url, { method, headers: this._headers, body })
+	}
+
+	public async getAttachment(attachment: any): Promise<string> {
+		const res = await fetch(attachment.content, { headers: this._headers })
+
+		const blob = await res.blob()
+		return URL.createObjectURL(blob)
+	}
+
+	public async getBoards(): Promise<JiraAPI.Board[]> {
+		const res = await this._request('/agile/1.0/board?type=scrum&orderBy=name')
+		return res.values
+	}
+
+	public async getSprints(boardId: string): Promise<JiraAPI.Sprint[]> {
+		const res = await this._request(`/agile/1.0/board/${boardId}/sprint?state=active,future`)
+		return res.values.sort((a, b) => a.name.localeCompare(b.name))
+	}
+
+	public async getIssues(sprintId: string): Promise<JiraAPI.Issue[]> {
+		const res = await this._request(`/agile/1.0/sprint/${sprintId}/issue`)
+		return res.issues
+	}
+
+	public async getIssue(key: string): Promise<JiraAPI.Issue> {
+		const res = await this._request(`/api/2/issue/${key}?expand=renderedFields`)
+		return res
+	}
+
+	public getIssueUrl(key: string): string {
+		return `${this._auth.resourceURL}/browse/${key}`
+	}
+
+	public async editIssueStoryPoints(issueId: string, value: number | null) {
+		// name of the story point field is customfield_10020
+		const body = { fields: { customfield_10020: value } }
+		this._headers.append('Content-Type', 'application/json')
+		const res = this._request(`/api/3/issue/${issueId}`, 'PUT', JSON.stringify(body), true)
+		this._headers.delete('Content-Type')
+		return res
+	}
+
+	public async getFieldTypes(): Promise<JiraAPI.IssueType[]> {
+		return this._request('/api/2/field')
+	}
+
+	public async getIssueTypes(): Promise<JiraAPI.IssueType[]> {
+		return this._request('/api/2/issuetype')
+	}
+
+	public async getProjects(): Promise<JiraAPI.Project[]> {
+		return this._request<JiraAPI.Project[]>('/api/2/project').then((projects) => projects.sort((a, b) => a.name.localeCompare(b.name)))
+	}
+
+	public async getCreateMeta(): Promise<JiraAPI.CreateMeta[]> {
+		const res = await this._request('/api/2/issue/createmeta')
+		return res.projects
+	}
+
+	public async createNewIssue(issueTypeId: string, projectId: string, summary: string, description?: string): Promise<any> {
+		const body: RecursivePartial<JiraAPI.Issue> = {
+			fields: {
+				issuetype: { id: issueTypeId },
+				project: { id: projectId },
+				summary,
+				description
+			}
+		}
+		this._headers.append('Content-Type', 'application/json')
+		const res = this._request('/api/2/issue', 'POST', JSON.stringify(body))
+		this._headers.delete('Content-Type')
+		return res
+	}
+}
+
+export default Jira
+
 export namespace JiraAPI {
+	export interface AccessibleResource {
+		id: string
+		url: string
+		name: string
+		scopes: string[]
+		avatarUrl: string
+	}
+
+	export interface OAuthResponse {
+		access_token: string
+		refresh_token?: string
+		expires_in: number
+		scope: string
+	}
+
 	export interface AvatarURLs {
 		'48x48': string
 		'24x24': string
@@ -263,97 +370,5 @@ export namespace JiraAPI {
 				worklogs: []
 			}
 		}
-	}
-}
-
-export default class Jira {
-	private _headers = new Headers()
-	private _baseUrl: string
-
-	constructor(private _session: Session, private _updateSession: SessionContextValue['update']) {
-		this._baseUrl = `https://api.atlassian.com/ex/jira/${this._session.cloudId}/rest`
-		this._headers.append('Authorization', `Bearer ${this._session.token}`)
-		this._headers.append('Accept', 'application/json')
-	}
-
-	private async _request<T = any>(url: string, method?: string, body?: string, noJsonPlz: boolean = false): Promise<T> {
-		if (Date.now() > this._session.expires) await this._updateSession()
-		return fetch(this._baseUrl + url, { method, headers: this._headers, body }).then((r) => (noJsonPlz ? r : r.json()))
-	}
-
-	public async withAuth(url: string, method?: string, body?: string) {
-		return fetch(this._baseUrl + url, { method, headers: this._headers, body })
-	}
-
-	public async getAttachment(attachment: any): Promise<string> {
-		const res = await fetch(attachment.content, { headers: this._headers })
-
-		const blob = await res.blob()
-		return URL.createObjectURL(blob)
-	}
-
-	public async getBoards(): Promise<JiraAPI.Board[]> {
-		const res = await this._request('/agile/1.0/board?type=scrum&orderBy=name')
-		return res.values
-	}
-
-	public async getSprints(boardId: string): Promise<JiraAPI.Sprint[]> {
-		const res = await this._request(`/agile/1.0/board/${boardId}/sprint?state=active,future`)
-		return res.values.sort((a, b) => a.name.localeCompare(b.name))
-	}
-
-	public async getIssues(sprintId: string): Promise<JiraAPI.Issue[]> {
-		const res = await this._request(`/agile/1.0/sprint/${sprintId}/issue`)
-		return res.issues
-	}
-
-	public async getIssue(key: string): Promise<JiraAPI.Issue> {
-		const res = await this._request(`/api/2/issue/${key}?expand=renderedFields`)
-		return res
-	}
-
-	public getIssueUrl(key: string): string {
-		return `${this._session.resourceUrl}/browse/${key}`
-	}
-
-	public async editIssueStoryPoints(issueId: string, value: number | null) {
-		// name of the story point field is customfield_10020
-		const body = { fields: { customfield_10020: value } }
-		this._headers.append('Content-Type', 'application/json')
-		const res = this._request(`/api/3/issue/${issueId}`, 'PUT', JSON.stringify(body), true)
-		this._headers.delete('Content-Type')
-		return res
-	}
-
-	public async getFieldTypes(): Promise<JiraAPI.IssueType[]> {
-		return this._request('/api/2/field')
-	}
-
-	public async getIssueTypes(): Promise<JiraAPI.IssueType[]> {
-		return this._request('/api/2/issuetype')
-	}
-
-	public async getProjects(): Promise<JiraAPI.Project[]> {
-		return this._request<JiraAPI.Project[]>('/api/2/project').then((projects) => projects.sort((a, b) => a.name.localeCompare(b.name)))
-	}
-
-	public async getCreateMeta(): Promise<JiraAPI.CreateMeta[]> {
-		const res = await this._request('/api/2/issue/createmeta')
-		return res.projects
-	}
-
-	public async createNewIssue(issueTypeId: string, projectId: string, summary: string, description?: string): Promise<any> {
-		const body: RecursivePartial<JiraAPI.Issue> = {
-			fields: {
-				issuetype: { id: issueTypeId },
-				project: { id: projectId },
-				summary,
-				description
-			}
-		}
-		this._headers.append('Content-Type', 'application/json')
-		const res = this._request('/api/2/issue', 'POST', JSON.stringify(body))
-		this._headers.delete('Content-Type')
-		return res
 	}
 }
