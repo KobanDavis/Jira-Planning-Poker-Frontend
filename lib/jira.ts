@@ -277,7 +277,7 @@ export default class Jira {
 	}
 
 	private async _request<T = any>(url: string, method?: string, body?: string, noJsonPlz: boolean = false): Promise<T> {
-		if (Date.now() > this._session.expires) await this._updateSession()
+		// if (Date.now() > this._session.expires) await this._updateSession()
 		return fetch(this._baseUrl + url, { method, headers: this._headers, body }).then((r) => (noJsonPlz ? r : r.json()))
 	}
 
