@@ -1,14 +1,14 @@
-import { Auth, Modals } from 'components'
-import { useEffect, useLayoutEffect, useState } from 'react'
+import dynamic from 'next/dynamic'
+import localFont from 'next/font/local'
+import { Modals } from 'components'
+import { useLayoutEffect, useState } from 'react'
 import { AppProps } from 'next/app'
 import { GameProvider } from 'providers/game'
+import { JiraProvider } from 'providers/jiraAuth'
 import { ThemeProvider, useTheme } from '@kobandavis/ui'
 import { Cog6ToothIcon } from '@heroicons/react/24/solid'
-import localFont from 'next/font/local'
 
 import 'styles/globals.css'
-import { JiraProvider } from 'providers/jiraAuth'
-import dynamic from 'next/dynamic'
 
 const satoshi = localFont({
 	src: [

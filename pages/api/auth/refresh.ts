@@ -8,6 +8,8 @@ export interface ErrorResponse {
 
 export default async (req: NextApiRequest, res: NextApiResponse<JiraToken | ErrorResponse>) => {
 	let refreshToken: string
+	console.log(req.method)
+	if (req.method !== 'POST') return res.status(405)
 	if (!req.body.refreshToken) {
 		return res.status(400).json({ error: 'Missing `refreshToken` property in body.' })
 	} else {

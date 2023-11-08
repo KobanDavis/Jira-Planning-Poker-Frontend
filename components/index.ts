@@ -1,4 +1,3 @@
-export { default as Auth } from './Auth'
 export { default as Comment } from './Comment'
 export { default as Issue } from './Issue'
 export { default as Modals } from './Modals'
