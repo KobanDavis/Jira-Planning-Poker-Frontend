@@ -1,7 +1,6 @@
 import formatLinks from 'lib/formatLinks'
 import { JiraAPI } from 'lib/jira'
 import moment from 'moment'
-import { useSession } from 'next-auth/react'
 import { useJira } from 'providers/jiraAuth'
 import { FC } from 'react'
 
