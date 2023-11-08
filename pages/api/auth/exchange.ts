@@ -10,7 +10,7 @@ export interface ErrorResponse {
 export default async (req: NextApiRequest, res: NextApiResponse<JiraAuth | ErrorResponse>) => {
 	let code: string
 	console.log(req.method)
-	if (req.method !== 'POST') return res.status(405)
+	if (req.method !== 'POST') return res.status(405).end()
 	if (!req.body.code) {
 		return res.status(400).json({ error: 'Missing `code` property in body.' })
 	} else {
