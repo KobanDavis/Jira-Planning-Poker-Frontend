@@ -4,16 +4,15 @@ import { Game } from 'types/backend'
 import { NotJoined, Lobby, PreGame, PostGame, InGame } from 'components/Game'
 import { useRouter } from 'next/router'
 import { useGame } from 'providers/game'
-import { useJira } from 'providers/jira'
+import { useJira } from 'providers/jiraAuth'
 import { LoadingScreen } from '@kobandavis/ui'
-import { Cog6ToothIcon, UserIcon, WifiIcon } from '@heroicons/react/24/solid'
-import { Modals } from 'components'
+import { UserIcon } from '@heroicons/react/24/solid'
 import ConnectedPlayers from 'components/ConnectedPlayers'
 
 const Room: FC = () => {
 	const router = useRouter()
 	const { self, data, socket, updateData } = useGame()
-	const jira = useJira()
+	const { jira } = useJira()
 
 	const [roomExists, setRoomExists] = useState<boolean>(null)
 
