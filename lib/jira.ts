@@ -11,7 +11,7 @@ class Jira {
 	constructor(private _auth: JiraAuth) {
 		this._baseUrl = `https://api.atlassian.com/ex/jira/${this._auth.cloudId}/rest`
 
-		this._headers.append('Accept', 'application/json')
+		this._headers.set('Accept', 'application/json')
 		this._updateTokenInHeader(this._auth.token)
 	}
 
@@ -65,8 +65,8 @@ class Jira {
 	public async editIssueStoryPoints(issueId: string, value: number | null) {
 		// name of the story point field is customfield_10020
 		const body = { fields: { customfield_10020: value } }
-		this._headers.append('Content-Type', 'application/json')
-		const res = this._request(`/api/3/issue/${issueId}`, 'PUT', JSON.stringify(body), true)
+		this._headers.set('Content-Type', 'application/json')
+		const res = await this._request(`/api/3/issue/${issueId}`, 'PUT', JSON.stringify(body), true)
 		this._headers.delete('Content-Type')
 		return res
 	}
