@@ -97,8 +97,8 @@ class Jira {
 				description
 			}
 		}
-		this._headers.append('Content-Type', 'application/json')
-		const res = this._request('/api/2/issue', 'POST', JSON.stringify(body))
+		this._headers.set('Content-Type', 'application/json')
+		const res = await this._request('/api/2/issue', 'POST', JSON.stringify(body))
 		this._headers.delete('Content-Type')
 		return res
 	}

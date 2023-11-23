@@ -78,7 +78,6 @@ const JiraProvider: FC<{ children: ReactNode }> = (props) => {
 	const noAuthAndNotLoginPage = !auth && router.pathname !== '/login'
 	const authenticatedButOnAuthRoute = auth && allowedRoutes.includes(router.pathname)
 
-	console.log(hasExpired(auth), noAuthAndNotLoginPage, authenticatedButOnAuthRoute)
 	if (hasExpired(auth) || noAuthAndNotLoginPage || authenticatedButOnAuthRoute) {
 		return <LoadingScreen />
 	}
