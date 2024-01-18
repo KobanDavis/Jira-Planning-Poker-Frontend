@@ -66,7 +66,13 @@ const JiraProvider: FC<{ children: ReactNode }> = (props) => {
 				}
 			} else if (hasExpired(auth)) {
 				const newAuth = await refreshAccessToken(auth.refreshToken)
-				updateAuth({ ...auth, ...newAuth })
+				console.log(newAuth)
+				if ('error' in newAuth) {
+					updateAuth(null)
+					router.reload()
+				} else {
+					updateAuth({ ...auth, ...newAuth })
+				}
 			} else if (allowedRoutes.includes(router.pathname)) {
 				router.push('/')
 			}
