@@ -5,7 +5,11 @@ export default function useLocalState(key: string, defaultValue?: string): [stri
 
 	function updateState(value: string): void {
 		setState(value)
-		localStorage.setItem(key, value)
+		if (value) {
+			localStorage.setItem(key, value)
+		} else {
+			localStorage.removeItem(key)
+		}
 	}
 
 	return [state, updateState]

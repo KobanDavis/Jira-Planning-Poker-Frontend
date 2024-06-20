@@ -1,5 +1,5 @@
 import React, { FC } from 'react'
-import { Card, Input, Label, Modal } from '@kobandavis/ui'
+import { Button, Card, Input, Label, Modal } from '@kobandavis/ui'
 import { ThemeButtons } from 'components'
 import { useLocalState } from 'hooks'
 
@@ -10,11 +10,17 @@ interface SettingsProps {
 const Settings: FC<SettingsProps> = ({ close }) => {
 	const [baseFontSize, setBaseFontSize] = useLocalState('baseFontSize', '16')
 	const [name, setName] = useLocalState('name')
+	const [jiraAuth, setJiraAuth] = useLocalState('jiraAuth')
 
 	const handleBaseFontSizeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const { value } = e.target
 		document.documentElement.style.setProperty('font-size', value + 'px')
 		setBaseFontSize(value)
+	}
+
+	const logout = () => {
+		setJiraAuth(undefined)
+		window.location.reload()
 	}
 
 	return (
@@ -37,6 +43,13 @@ const Settings: FC<SettingsProps> = ({ close }) => {
 							</div>
 							<Input value={name} onChange={(e) => setName(e.target.value)} />
 						</div>
+						{jiraAuth ? (
+							<div className='flex flex-col space-y-2'>
+								<Button type='primary' onClick={logout}>
+									Logout
+								</Button>
+							</div>
+						) : null}
 					</div>
 				</Card>
 			)}
